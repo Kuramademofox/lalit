@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LALIT AUTOMOTIVE ERP v5.2.4 - Purchase GRN Entry (F6)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: JetBrains Mono & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg-terminal: #050811;
+        --bg-header: #080d19;
+        --bg-panel: #0a1120;
+        --bg-card: #0d1527;
+        --bg-row-alt: #080e1b;
+        --border-dim: #131c30;
+        --border-mid: #1c2944;
+        --border-bright: #2d416b;
+        --cyan-bright: #00f2fe;
+        --emerald-bright: #10b981;
+        --amber-bright: #f59e0b;
+        --blue-accent: #1e5dd8;
+        --magenta-dim: #701a75;
+        --magenta-text: #f472b6;
+      }
+
+      * {
+        box-sizing: border-box;
+        user-select: none;
+      }
+
+      body {
+        font-family: "JetBrains Mono", monospace;
+        background-color: var(--bg-terminal);
+        color: #cbd5e1;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+        font-size: 11px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .font-ui {
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Dense Scrollbar */
+      ::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #060a14;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1b263e;
+        border-radius: 2px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #3b82f6;
+      }
+
+      /* Glows */
+      .glow-cyan {
+        text-shadow: 0 0 8px rgba(0, 242, 254, 0.45);
+      }
+      .glow-green {
+        text-shadow: 0 0 8px rgba(16, 185, 129, 0.45);
+      }
+      .glow-amber {
+        text-shadow: 0 0 8px rgba(245, 158, 11, 0.45);
+      }
+
+      /* Dense GRN Grid Table */
+      .grn-table th {
+        background-color: #0b1120;
+        border-bottom: 1px solid #1a2742;
+        border-right: 1px solid #131d33;
+        color: #899ab4;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+      }
+      .grn-table td {
+        border-bottom: 1px solid #101726;
+        border-right: 1px solid #0d1422;
+        white-space: nowrap;
+      }
+      .grn-table tr:hover {
+        background-color: #0e172a;
+      }
+      .grn-table tr.selected-row {
+        background: linear-gradient(
+          90deg,
+          rgba(30, 93, 216, 0.38) 0%,
+          rgba(14, 42, 95, 0.22) 100%
+        ) !important;
+        outline: 1px solid #00f2fe;
+      }
+
+      /* Modal Backdrop */
+      .modal-overlay {
+        background-color: rgba(3, 6, 12, 0.88);
+        backdrop-filter: blur(3px);
+      }
+
+      /* Toast Notification */
+      #grn-toast {
+        transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateY(120%);
+        opacity: 0;
+      }
+      #grn-toast.active {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body class="selection:bg-cyan-500 selection:text-black">
+    <!-- ========================================================================= -->
+    <!-- 1. PERSISTENT GLOBAL TOP BAR                                              -->
+    <!-- ========================================================================= -->
+    <header
+      class="bg-[#080d19] border-b border-[#18233a] px-3 py-1 flex items-center justify-between z-30 shrink-0"
+    >
+      <!-- Left: Brand & Hub -->
+      <div class="flex items-center gap-3">
+        <div
+          class="flex items-center gap-2 cursor-pointer"
+          onclick="notify('LALIT AUTOMOTIVE ERP', 'Enterprise Spares Suite v5.2.4 Node WRK-03 Online')"
+        >
+          <div
+            class="w-6 h-6 rounded bg-gradient-to-br from-blue-700 via-indigo-600 to-cyan-500 flex items-center justify-center p-0.5 shadow-md shadow-blue-900/40"
+          >
+            <svg
+              class="w-3.5 h-3.5 text-white"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <rect x="2" y="7" width="20" height="14" rx="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+          </div>
+          <div class="leading-tight">
+            <div
+              class="font-bold text-white text-[11px] tracking-wider uppercase flex items-center gap-1.5"
+            >
+              <span>LALIT AUTOMOTIVE ERP</span>
+            </div>
+            <div class="text-[8.5px] text-slate-400">
+              v5.2.4 Enterprise Spares Edition
+            </div>
+          </div>
+        </div>
+
+        <!-- Branch Picker -->
+        <div
+          onclick="openModal('modal-branch')"
+          class="flex items-center bg-[#0f1728] border border-[#1e2a42] hover:border-slate-400 rounded px-2 py-0.5 text-[10px] cursor-pointer transition"
+        >
+          <span
+            class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-2 animate-pulse"
+          ></span>
+          <span id="active-branch-name" class="text-slate-200 font-medium"
+            >Lalit Automotive - Main Hub Branch #01</span
+          >
+          <svg
+            class="w-2.5 h-2.5 ml-2 text-slate-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            ></path>
+          </svg>
+        </div>
+
+        <!-- Financial Year -->
+        <span
+          class="bg-[#0d1d28] border border-cyan-800/60 text-cyan-400 px-1.5 py-0.2 rounded text-[9px] font-bold"
+        >
+          FY 2024-25
+        </span>
+      </div>
+
+      <!-- Center: Universal Parts Search -->
+      <div class="flex-1 max-w-lg mx-3">
+        <div class="relative flex items-center">
+          <svg
+            class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            ></path>
+          </svg>
+          <input
+            id="global-sku-search"
+            type="text"
+            placeholder="Search 1,00,000+ Parts / OEM SKU..."
+            oninput="handleSearch(this.value)"
+            class="w-full bg-[#0b1220] border border-[#1d2942] focus:border-cyan-400 focus:outline-none rounded pl-8 pr-16 py-0.5 text-[10.5px] text-cyan-200 placeholder-slate-500 transition"
+          />
+          <div class="absolute right-1.5 flex items-center gap-1">
+            <kbd
+              onclick="focusSearch()"
+              class="bg-[#152036] text-slate-400 text-[8.5px] px-1 py-0.2 rounded border border-[#263654] cursor-pointer"
+              >Ctrl+K</kbd
+            >
+            <kbd
+              onclick="focusSearch()"
+              class="bg-[#152036] text-slate-400 text-[8.5px] px-1 py-0.2 rounded border border-[#263654] cursor-pointer"
+              >F3</kbd
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Clock & User -->
+      <div class="flex items-center gap-3">
+        <div
+          class="flex items-center gap-1 text-slate-200 bg-[#0d1526] px-2 py-0.5 rounded border border-[#1a253c]"
+        >
+          <svg
+            class="w-3 h-3 text-cyan-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span
+            id="live-ist-clock"
+            class="text-[10.5px] font-bold text-cyan-300 glow-cyan"
+            >14:38:22</span
+          >
+          <span class="text-[8px] text-slate-400">IST</span>
+        </div>
+
+        <div
+          onclick="notify('CASHIER PROFILE', 'R. Deshmukh | Shift: General Store | Node WRK-03 Online')"
+          class="flex items-center gap-2 pl-2 border-l border-slate-800 cursor-pointer"
+        >
+          <div class="text-right leading-tight">
+            <div class="text-[10.5px] font-bold text-slate-100">
+              R. Deshmukh
+            </div>
+            <div
+              class="text-[7.5px] text-amber-400 font-semibold uppercase tracking-wider"
+            >
+              CHIEF COUNTER CASHIER
+            </div>
+          </div>
+          <div
+            class="w-6 h-6 rounded-full border border-amber-500/50 bg-amber-950/40 flex items-center justify-center"
+          >
+            <svg
+              class="w-4 h-4 text-amber-300"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ========================================================================= -->
+    <!-- 2. HOTKEYS & METADATA RIBBON                                              -->
+    <!-- ========================================================================= -->
+    <div
+      class="bg-[#070b16] border-b border-[#152036] px-3 py-0.5 flex items-center justify-between text-[9px] shrink-0"
+    >
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <span class="text-slate-500 font-bold uppercase text-[8.5px] mr-1"
+          >HOTKEYS:</span
+        >
+        <button
+          onclick="notify('HELP [F1]', 'GRN Entry: F9=Save Inward, F10=Post Ledger, F11=Debit Note Rejection, F2=Vendor Profile, Esc=Cancel')"
+          class="hover:bg-slate-700/50 bg-[#0f1728] border border-[#1d2a42] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F1]</span> Help
+        </button>
+        <button
+          onclick="notify('DATE [F2]', 'GRN Processing Date locked to 24-Oct-2024 (Financial Shift Book 01)')"
+          class="hover:bg-slate-700/50 bg-[#0f1728] border border-[#1d2a42] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F2]</span> Date
+        </button>
+        <button
+          onclick="focusSearch()"
+          class="hover:bg-slate-700/50 bg-[#0f1728] border border-[#1d2a42] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F3]</span> Part Lookup
+        </button>
+        <button
+          onclick="notify('SWITCH VIEW', 'Opening Sales Counter POS [F4]...')"
+          class="hover:bg-slate-700/50 bg-[#0f1728] border border-[#1d2a42] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F4]</span> Sales POS
+        </button>
+        <button
+          onclick="notify('SWITCH VIEW', 'Opening 100K+ Inventory [F5]...')"
+          class="hover:bg-slate-700/50 bg-[#0f1728] border border-[#1d2a42] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F5]</span> Inventory
+        </button>
+        <button
+          onclick="notify('PURCHASE GRN [F6]', 'Currently Active View: Inward Goods Receipt Note')"
+          class="bg-blue-600/30 border border-blue-500 text-blue-200 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-cyan-300 font-bold">[F6]</span> Purchase GRN
+        </button>
+        <button
+          onclick="notify('GARAGE LEDGER [F7]', 'Opening Accounts & Vendor Ledger [F7]...')"
+          class="hover:bg-slate-700/50 bg-[#0f1728] border border-[#1d2a42] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F7]</span> Ledger
+        </button>
+        <button
+          onclick="notify('ANALYTICS [F8]', 'Opening Procurement & Delivery Velocity Analytics [F8]...')"
+          class="hover:bg-slate-700/50 bg-[#0f1728] border border-[#1d2a42] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F8]</span> Analytics
+        </button>
+        <button
+          onclick="triggerPrintLabel()"
+          class="hover:bg-slate-700/50 bg-[#0f1728] border border-[#1d2a42] text-amber-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-amber-400 font-bold">[Alt+P]</span> Print Token
+        </button>
+        <button
+          onclick="closeAllModals()"
+          class="hover:bg-slate-700/50 bg-[#0f1728] border border-[#1d2a42] text-red-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-red-400 font-bold">[Esc]</span> Back
+        </button>
+      </div>
+
+      <!-- Right Live GRN Tracker -->
+      <div class="flex items-center gap-3 text-slate-400">
+        <div>
+          PUR VOUCHER:
+          <strong class="text-cyan-300 font-bold">#PUR-2024-0492</strong>
+        </div>
+        <span class="text-slate-700">|</span>
+        <div>
+          GRN NO: <strong class="text-emerald-400 font-bold">#GRN-8921</strong>
+        </div>
+        <span class="text-slate-700">|</span>
+        <div>
+          ENTRY DATE: <strong class="text-slate-200">24-Oct-2024</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 3. MAIN WORKSPACE (SIDEBAR + GRN CONSOLE)                                 -->
+    <!-- ========================================================================= -->
+    <div class="flex-1 flex overflow-hidden">
+      <!-- LEFT SIDEBAR -->
+      <aside
+        class="w-48 bg-[#060a14] border-r border-[#141e33] flex flex-col justify-between shrink-0"
+      >
+        <div>
+          <div
+            class="px-3 py-1.5 border-b border-[#11192b] flex items-center justify-between text-[8.5px] font-bold text-slate-400 uppercase tracking-wider"
+          >
+            <span>MODULES NAVIGATION</span>
+            <span
+              class="text-emerald-400 flex items-center gap-1 font-semibold text-[8px]"
+            >
+              <span
+                class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"
+              ></span>
+              ONLINE
+            </span>
+          </div>
+
+          <nav class="p-1 space-y-1">
+            <!-- POS (F4) -->
+            <button
+              onclick="notify('ROUTING', 'Navigating to Counter POS [F4]')"
+              class="w-full flex items-center justify-between px-2.5 py-1.5 rounded text-slate-400 hover:text-slate-200 hover:bg-[#0e1628] transition text-[10.5px] text-left"
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-3.5 h-3.5 text-slate-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <span>Counter POS Billing</span>
+              </div>
+              <span
+                class="text-[9px] bg-[#131f36] text-slate-400 px-1 py-0.2 rounded"
+                >F4</span
+              >
+            </button>
+
+            <!-- Inventory (F5) -->
+            <button
+              onclick="notify('ROUTING', 'Navigating to 100K+ Inventory [F5]')"
+              class="w-full flex items-center justify-between px-2.5 py-1.5 rounded text-slate-400 hover:text-slate-200 hover:bg-[#0e1628] transition text-[10.5px] text-left"
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-3.5 h-3.5 text-slate-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                  ></path>
+                </svg>
+                <span>100K+ Inventory</span>
+              </div>
+              <span
+                class="text-[9px] bg-[#131f36] text-slate-400 px-1 py-0.2 rounded"
+                >F5</span
+              >
+            </button>
+
+            <!-- GRN Entry (F6) ACTIVE -->
+            <button
+              class="w-full flex items-center justify-between px-2.5 py-2 rounded bg-blue-600 text-white font-medium text-[10.5px] shadow-lg shadow-blue-700/30 text-left transition"
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-3.5 h-3.5 text-blue-200"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  ></path>
+                </svg>
+                <span class="font-bold">Purchase GRN Entry</span>
+              </div>
+              <span
+                class="text-[9px] bg-blue-800 text-blue-100 px-1 py-0.2 rounded font-bold"
+                >F6</span
+              >
+            </button>
+
+            <!-- Ledger (F7) -->
+            <button
+              onclick="notify('ROUTING', 'Navigating to Customer & Vendor Ledger [F7]')"
+              class="w-full flex items-center justify-between px-2.5 py-1.5 rounded text-slate-400 hover:text-slate-200 hover:bg-[#0e1628] transition text-[10.5px] text-left"
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-3.5 h-3.5 text-slate-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                  ></path>
+                </svg>
+                <span>Garage & Customer Ledger</span>
+              </div>
+              <span
+                class="text-[9px] bg-[#131f36] text-slate-400 px-1 py-0.2 rounded"
+                >F7</span
+              >
+            </button>
+
+            <!-- Analytics (F8) -->
+            <button
+              onclick="notify('ROUTING', 'Navigating to Stock Analytics [F8]')"
+              class="w-full flex items-center justify-between px-2.5 py-1.5 rounded text-slate-400 hover:text-slate-200 hover:bg-[#0e1628] transition text-[10.5px] text-left"
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-3.5 h-3.5 text-slate-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  ></path>
+                </svg>
+                <span>Stock Analytics</span>
+              </div>
+              <span
+                class="text-[9px] bg-[#131f36] text-slate-400 px-1 py-0.2 rounded"
+                >F8</span
+              >
+            </button>
+          </nav>
+        </div>
+
+        <!-- Diagnostics Pill -->
+        <div
+          class="p-2 border-t border-[#141e33] bg-[#060a12] text-[8.5px] space-y-1"
+        >
+          <div class="flex justify-between text-slate-400">
+            <span>STATION ID:</span>
+            <span class="text-slate-200 font-bold">WRK-COUNTER-03</span>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>THERMAL PRINTER:</span>
+            <button
+              onclick="notify('PRINTER COM3', 'Epson Thermal 203 DPI online for Barcode Sticker queue')"
+              class="text-emerald-400 hover:underline font-bold"
+            >
+              READY (COM3)
+            </button>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>BARCODE SCANNER:</span>
+            <span class="text-cyan-400 font-bold">USB ACTIVE</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- RIGHT MAIN WORKSPACE -->
+      <section class="flex-1 flex flex-col bg-[#050811] overflow-hidden">
+        <!-- 3A. SUPPLIER, PO MATCH & STORAGE STRIP -->
+        <div
+          class="bg-[#0a1120] border-b border-[#18243c] p-2.5 px-3 flex flex-wrap items-center justify-between gap-3 shrink-0"
+        >
+          <!-- Vendor Info -->
+          <div class="flex items-center gap-3">
+            <div
+              class="w-7 h-7 rounded bg-[#13223f] border border-blue-500/60 flex items-center justify-center text-cyan-300 font-bold text-[12px]"
+            >
+              B
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-white text-[12px] tracking-wide"
+                  >Bosch Automotive Aftermarket India Ltd</span
+                >
+                <span
+                  class="bg-emerald-950/80 border border-emerald-500/60 text-emerald-400 px-1.5 py-0.2 rounded text-[8px] font-bold"
+                  >VERIFIED VENDOR</span
+                >
+                <button
+                  onclick="openModal('modal-vendor')"
+                  class="bg-[#131f36] hover:bg-[#1a2b4b] border border-[#233556] text-cyan-300 text-[8.5px] px-1.5 py-0.2 rounded font-bold"
+                >
+                  F2 Vendor
+                </button>
+              </div>
+              <div
+                class="text-[9px] text-slate-400 flex items-center gap-2 mt-0.5"
+              >
+                <span
+                  >GSTIN:
+                  <strong class="text-slate-200 font-mono"
+                    >29AACB1402H1Z2</strong
+                  ></span
+                >
+                <span class="text-slate-600">•</span>
+                <span
+                  >State:
+                  <strong class="text-slate-200">29 (Karnataka)</strong></span
+                >
+                <span class="text-slate-600">•</span>
+                <span
+                  class="text-cyan-400 bg-cyan-950/60 border border-cyan-700/50 px-1 rounded"
+                  >Inter-State IGST (18%)</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Challan Ref & Matched PO -->
+          <div class="flex items-center gap-4 text-[9.5px]">
+            <div>
+              <div class="text-[8px] text-slate-500 uppercase">
+                CHALLAN / SUPP REF:
+              </div>
+              <div class="font-bold text-amber-300">
+                INV-BOS-99381
+                <span class="text-slate-400 text-[8.5px] font-normal"
+                  >(Dated 22-Oct-2024)</span
+                >
+              </div>
+            </div>
+            <div class="border-l border-slate-800 pl-3">
+              <div class="text-[8px] text-slate-500 uppercase">
+                MATCHED PURCHASE ORDER:
+              </div>
+              <div class="font-bold text-emerald-400 flex items-center gap-1.5">
+                <span>PO-2024-0318</span>
+                <span
+                  class="text-[8.5px] bg-[#102422] text-emerald-300 px-1 rounded border border-emerald-600/40 font-normal"
+                  >12 Items Linked</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Target Bay Allocation & Counter -->
+          <div class="flex items-center gap-3">
+            <div
+              onclick="notify('RECEIVING BAY', 'Allocated: Central Warehouse Rack Receiving Bay #03 (Capacity: 85% Empty)')"
+              class="bg-[#0f182c] border border-[#1e2e4e] hover:border-cyan-400 px-2.5 py-1 rounded text-right cursor-pointer transition"
+            >
+              <div
+                class="text-[8px] text-slate-400 uppercase flex items-center justify-end gap-1"
+              >
+                <span>TARGET STORAGE ALLOCATION:</span>
+                <span
+                  class="text-emerald-400 text-[7.5px] bg-emerald-950/80 px-1 rounded font-bold animate-pulse"
+                  >LIVE UNLOADING</span
+                >
+              </div>
+              <div
+                class="font-bold text-slate-100 flex items-center gap-1.5 text-[10.5px]"
+              >
+                <span class="text-amber-400">🏛️</span>
+                <span>Central Warehouse Rack Receiving Bay #03</span>
+              </div>
+            </div>
+
+            <div
+              class="bg-[#121c33] border border-blue-500/60 px-3 py-1 rounded text-center"
+            >
+              <div class="text-[8px] text-slate-400 uppercase">
+                LINE ITEMS TRAVERSED
+              </div>
+              <div class="font-bold text-[14px] text-cyan-300 tracking-tight">
+                04
+                <span class="text-slate-400 text-[10px] font-normal"
+                  >/ 12 Recvd</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3B. TABLE CONTROL SUB-HEADER -->
+        <div
+          class="bg-[#080d18] px-3 py-1 border-b border-[#152036] flex items-center justify-between text-[9.5px] shrink-0"
+        >
+          <div class="flex items-center gap-3">
+            <span
+              class="font-bold text-slate-200 tracking-wider uppercase flex items-center gap-1"
+            >
+              <svg
+                class="w-3.5 h-3.5 text-blue-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                ></path>
+              </svg>
+              PO INWARD LEDGER REGISTER
+            </span>
+            <span class="text-slate-600">|</span>
+            <span class="text-slate-400"
+              >Nav:
+              <kbd
+                class="bg-[#142036] text-cyan-300 px-1 rounded border border-[#223556]"
+                >↑/↓ Rows</kbd
+              >,
+              <kbd
+                class="bg-[#142036] text-cyan-300 px-1 rounded border border-[#223556]"
+                >Tab/Enter Cells</kbd
+              ></span
+            >
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div
+              class="text-amber-400 text-[9px] flex items-center gap-1 bg-[#191508] border border-amber-600/50 px-2 py-0.5 rounded"
+            >
+              <span
+                >Active Focus:
+                <strong class="text-amber-300 font-bold" id="lbl-active-focus"
+                  >ROW #3 (Damaged Seal Exception)</strong
+                ></span
+              >
+            </div>
+            <button
+              onclick="toggleUnmatchedFilter()"
+              id="btn-filter-unmatched"
+              class="bg-[#101726] hover:bg-[#18243c] text-slate-300 border border-[#1f2c46] px-2 py-0.5 rounded flex items-center gap-1 text-[9px] transition"
+            >
+              <svg
+                class="w-3 h-3 text-cyan-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                ></path>
+              </svg>
+              <span>Filter Unmatched</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3C. GRN DENSE LEDGER TABLE -->
+        <div class="flex-1 overflow-x-auto overflow-y-auto relative">
+          <table
+            class="w-full grn-table text-left border-collapse text-[10.5px]"
+          >
+            <thead class="sticky top-0 z-10 text-[9px] uppercase">
+              <tr>
+                <th class="py-1 px-1.5 w-7 text-center">#</th>
+                <th class="py-1 px-2 w-32">PART CODE</th>
+                <th class="py-1 px-2.5">ITEM DESCRIPTION & BRAND</th>
+                <th class="py-1 px-2 w-28 font-mono">BARCODE / EAN</th>
+                <th class="py-1 px-1.5 w-14 text-center">HSN</th>
+                <th class="py-1 px-1.5 w-14 text-right text-slate-400">
+                  PO QTY
+                </th>
+                <th class="py-1 px-1.5 w-14 text-right text-cyan-300 font-bold">
+                  RECV QTY
+                </th>
+                <th class="py-1 px-1.5 w-16 text-center text-amber-400">
+                  REJ / SHORT
+                </th>
+                <th
+                  class="py-1 px-1.5 w-14 text-right text-emerald-400 font-bold"
+                >
+                  ACC QTY
+                </th>
+                <th class="py-1 px-2 w-20 text-right text-slate-300">
+                  PUR. RATE
+                </th>
+                <th class="py-1 px-1.5 w-12 text-center text-slate-400">
+                  TRD %
+                </th>
+                <th class="py-1 px-1.5 w-12 text-center text-slate-400">
+                  CSH %
+                </th>
+                <th class="py-1 px-2 w-20 text-right text-slate-200">
+                  TAXABLE RT
+                </th>
+                <th class="py-1 px-1.5 w-10 text-center text-cyan-400">
+                  IGST %
+                </th>
+                <th class="py-1 px-2 w-20 text-right text-cyan-300 font-bold">
+                  LANDED/U
+                </th>
+                <th class="py-1 px-2 w-20 text-right text-amber-300 font-bold">
+                  MRP (NEW)
+                </th>
+                <th
+                  class="py-1 px-1.5 w-14 text-center text-emerald-400 font-bold"
+                >
+                  MARGIN %
+                </th>
+              </tr>
+            </thead>
+            <tbody id="grn-table-body" class="divide-y divide-[#0e1728]">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 3D. SHORTAGE / DAMAGE EXCEPTION ALERT STRIP -->
+        <div
+          id="exception-alert-banner"
+          class="bg-[#180a18] border-y border-[#3d133d] px-3 py-1 flex items-center justify-between text-[9.5px] shrink-0"
+        >
+          <div class="flex items-center gap-2 text-pink-300">
+            <div
+              class="w-4 h-4 rounded bg-pink-950 border border-pink-500 flex items-center justify-center text-pink-300 text-[10px] font-bold"
+            >
+              !
+            </div>
+            <span class="font-bold text-pink-400 tracking-wider"
+              >SHORTAGE/DAMAGE EXCEPTION REGISTERED:</span
+            >
+            <span class="text-slate-200 font-ui" id="exception-desc-text"
+              >Item BOS-FLT-D012 short 2 units due to damaged seal on cargo
+              carton.</span
+            >
+          </div>
+
+          <div class="flex items-center gap-3">
+            <span class="text-slate-400 text-[9px]"
+              >Auto-generate Debit Note
+              <strong class="text-cyan-300 font-bold"
+                >DN-2024-0199</strong
+              ></span
+            >
+            <button
+              onclick="triggerClaimSupplier()"
+              class="bg-red-700 hover:bg-red-600 text-white font-bold px-2 py-0.5 rounded flex items-center gap-1 shadow transition"
+            >
+              <svg
+                class="w-3 h-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"
+                ></path>
+              </svg>
+              <span>Claim Supplier</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3E. BOTTOM 3 AUDIT & SUMMARY CARDS -->
+        <div
+          class="grid grid-cols-12 gap-2 p-2.5 bg-[#070b16] border-t border-[#162138] shrink-0"
+        >
+          <!-- Left: Overheads & Apportionment -->
+          <div
+            class="col-span-4 bg-[#0a1120] border border-[#1b263e] rounded p-2.5 flex flex-col justify-between text-[10px]"
+          >
+            <div>
+              <div
+                class="flex items-center justify-between border-b border-[#162136] pb-1 mb-1.5"
+              >
+                <span
+                  class="font-bold text-slate-200 flex items-center gap-1 uppercase tracking-wide"
+                >
+                  <svg
+                    class="w-3.5 h-3.5 text-blue-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"
+                    ></path>
+                  </svg>
+                  Inward Overheads & Apportionment
+                </span>
+                <span
+                  class="text-[8px] bg-emerald-950 text-emerald-300 border border-emerald-600/50 px-1 py-0.2 rounded font-bold"
+                  >APPORTION BY VALUE</span
+                >
+              </div>
+
+              <div class="space-y-1 text-slate-300">
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-400 flex items-center gap-1"
+                    >🚚 Freight / Transport Charges</span
+                  >
+                  <span class="text-slate-200 font-bold">+₹2,100.00</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-400 flex items-center gap-1"
+                    >🛡️ Inward Transit Insurance & Handling</span
+                  >
+                  <span class="text-slate-200 font-bold">+₹450.00</span>
+                </div>
+                <div
+                  class="flex justify-between items-center pt-1 border-t border-dashed border-slate-800"
+                >
+                  <span class="text-slate-400">% Effective Add-on Burden:</span>
+                  <span class="text-emerald-400 font-bold"
+                    >+2.52% on Landed</span
+                  >
+                </div>
+              </div>
+
+              <!-- Cost Apportionment Progress Bar -->
+              <div class="mt-2">
+                <div
+                  class="flex justify-between text-[8px] text-slate-400 mb-0.5"
+                >
+                  <span>COST APPORTIONMENT</span>
+                  <span class="text-cyan-300 font-bold"
+                    >BASE (82%) + TAX (15%) + FREIGHT (3%)</span
+                  >
+                </div>
+                <div
+                  class="w-full h-1.5 bg-slate-800 rounded overflow-hidden flex"
+                >
+                  <div class="bg-blue-600 h-full" style="width: 82%"></div>
+                  <div class="bg-cyan-400 h-full" style="width: 15%"></div>
+                  <div class="bg-emerald-400 h-full" style="width: 3%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Checkbox auto update -->
+            <div
+              class="pt-2 border-t border-slate-800/80 mt-1 flex items-center gap-2"
+            >
+              <input
+                type="checkbox"
+                id="chk-auto-barcodes"
+                checked
+                class="accent-blue-600 rounded cursor-pointer"
+              />
+              <label
+                for="chk-auto-barcodes"
+                class="text-[9px] text-slate-300 cursor-pointer"
+              >
+                <strong class="text-white">[Auto-Update Barcodes]</strong>
+                Update selling MRP & generate
+                <strong class="text-amber-300">388 thermal stickers</strong> on
+                Save.
+              </label>
+            </div>
+          </div>
+
+          <!-- Center: Voucher Tax Calculation (Rule 32 GST) -->
+          <div
+            class="col-span-5 bg-[#0a1120] border border-[#1b263e] rounded p-2.5 flex flex-col justify-between text-[10px]"
+          >
+            <div>
+              <div
+                class="flex items-center justify-between border-b border-[#162136] pb-1 mb-1.5"
+              >
+                <span
+                  class="font-bold text-slate-200 uppercase tracking-wide flex items-center gap-1"
+                >
+                  <svg
+                    class="w-3.5 h-3.5 text-emerald-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    ></path>
+                  </svg>
+                  Voucher Tax Calculation (Rule 32 GST)
+                </span>
+                <span class="text-slate-400 text-[8.5px]"
+                  >Round-off:
+                  <strong class="text-slate-200">₹0.00</strong></span
+                >
+              </div>
+
+              <div class="space-y-1 text-slate-300">
+                <div class="flex justify-between">
+                  <span>Total Invoice Gross (MRP Sum):</span>
+                  <span class="font-bold text-slate-100" id="calc-gross"
+                    >₹1,12,450.00</span
+                  >
+                </div>
+                <div class="flex justify-between text-amber-400">
+                  <span
+                    ><span class="text-slate-500">🏷️</span> Less: Trade & Cash
+                    Discount:</span
+                  >
+                  <span class="font-bold" id="calc-disc">-₹13,840.00</span>
+                </div>
+                <div class="flex justify-between text-slate-300">
+                  <span>Add: Total Logistics & Inward:</span>
+                  <span class="font-bold" id="calc-logistics">+₹2,550.00</span>
+                </div>
+                <div
+                  class="flex justify-between pt-1 border-t border-dashed border-slate-800"
+                >
+                  <span class="font-semibold text-white"
+                    >Net Taxable Assessment Value:</span
+                  >
+                  <span class="font-bold text-cyan-300" id="calc-taxable"
+                    >₹1,01,160.00</span
+                  >
+                </div>
+                <div class="flex justify-between text-[9px] text-slate-400">
+                  <span>IGST Total (18.00% Inter-State Rate):</span>
+                  <span class="text-slate-200 font-semibold" id="calc-igst"
+                    >₹18,208.80</span
+                  >
+                </div>
+                <div class="flex justify-between text-[9px]">
+                  <span class="text-slate-400"
+                    >Input Tax Credit (ITC Eligible Under Sec 16):</span
+                  >
+                  <span class="text-emerald-400 font-bold"
+                    >YES - FULL ITC CLAIM</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Big Cyan/Blue Total Payable Banner -->
+            <div
+              class="bg-gradient-to-r from-[#0d1f3b] to-[#0c2a38] border border-cyan-500/60 rounded p-1.5 px-2 flex items-center justify-between mt-1 shadow-lg shadow-cyan-950/40"
+            >
+              <div>
+                <div
+                  class="text-[7.5px] text-cyan-300 uppercase tracking-widest font-semibold"
+                >
+                  TOTAL INVOICE INWARD VALUE
+                </div>
+                <div class="text-[8.5px] text-slate-300">
+                  Payable to Bosch Aftermarket
+                </div>
+              </div>
+              <div
+                class="text-[20px] font-bold text-cyan-300 glow-cyan font-mono"
+                id="calc-total-inward"
+              >
+                ₹1,19,368.80
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Fast Action Bar (ERP 5.2) -->
+          <div
+            class="col-span-3 bg-[#0a1120] border border-[#1b263e] rounded p-2.5 flex flex-col justify-between text-[10px]"
+          >
+            <div>
+              <div
+                class="flex items-center justify-between border-b border-[#162136] pb-1 mb-2"
+              >
+                <span
+                  class="font-bold text-slate-200 uppercase tracking-wide flex items-center gap-1"
+                >
+                  <span class="text-amber-400">⚡</span> Fast Action Bar
+                </span>
+                <span class="text-[8.5px] text-slate-400 font-bold"
+                  >ERP 5.2</span
+                >
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="space-y-1.5">
+                <!-- Save GRN & Inward (F9) -->
+                <button
+                  onclick="commitGRN()"
+                  class="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-bold py-1.5 px-2.5 rounded flex items-center justify-between shadow-lg shadow-blue-700/40 border border-blue-400 transition"
+                >
+                  <div class="flex items-center gap-1.5">
+                    <svg
+                      class="w-3.5 h-3.5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                      ></path>
+                    </svg>
+                    <span class="text-[10.5px]">Save GRN & Inward</span>
+                  </div>
+                  <span
+                    class="bg-blue-800 text-blue-100 text-[8.5px] px-1 rounded font-bold"
+                    >F9</span
+                  >
+                </button>
+
+                <!-- Post to Vendor Ledger (F10) -->
+                <button
+                  onclick="postVendorLedger()"
+                  class="w-full bg-[#11192a] hover:bg-[#19243c] border border-[#21304c] text-slate-200 font-bold py-1.5 px-2.5 rounded flex items-center justify-between transition"
+                >
+                  <div class="flex items-center gap-1.5">
+                    <svg
+                      class="w-3.5 h-3.5 text-amber-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      ></path>
+                    </svg>
+                    <span class="text-[10px]">Post to Vendor Ledger</span>
+                  </div>
+                  <span class="text-slate-400 text-[8.5px] font-bold">F10</span>
+                </button>
+
+                <!-- Debit Note for 2 Rej (F11) -->
+                <button
+                  onclick="generateDebitNote()"
+                  class="w-full bg-[#17101f] hover:bg-[#23152f] border border-pink-700/60 text-pink-300 font-bold py-1.5 px-2.5 rounded flex items-center justify-between transition"
+                >
+                  <div class="flex items-center gap-1.5">
+                    <svg
+                      class="w-3.5 h-3.5 text-pink-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      ></path>
+                    </svg>
+                    <span class="text-[10px]">Debit Note for 2 Rej</span>
+                  </div>
+                  <span class="text-pink-400 text-[8.5px] font-bold">F11</span>
+                </button>
+
+                <!-- Cancel / Discard -->
+                <button
+                  onclick="discardGRNDraft()"
+                  class="w-full bg-[#0d1422] hover:bg-[#162034] border border-slate-700/60 text-slate-400 hover:text-red-400 py-1 px-2.5 rounded flex items-center justify-between transition text-[9.5px]"
+                >
+                  <span>&times; Cancel / Discard Draft</span>
+                  <span class="text-slate-500 font-bold">Esc</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Staging Status Indicator -->
+            <div
+              class="pt-2 border-t border-slate-800 flex items-center justify-between text-[9px]"
+            >
+              <span class="text-slate-400">Physical Staging Status:</span>
+              <span class="text-emerald-400 font-bold flex items-center gap-1">
+                <span
+                  class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"
+                ></span>
+                388/390 Boxed OK
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 4. BOTTOM STATUS / HARDWARE DIAGNOSTICS STRIP                             -->
+    <!-- ========================================================================= -->
+    <footer
+      class="bg-[#050810] border-t border-[#131b2e] px-3 py-1 text-[8.5px] shrink-0 z-30 flex items-center justify-between text-slate-400"
+    >
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1.5 text-slate-300">
+          <span
+            class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"
+          ></span>
+          <span>142,850 SKUs Indexed - Sybase Local Sync OK</span>
+        </div>
+        <span class="text-slate-700">|</span>
+        <div
+          class="flex items-center gap-1 cursor-pointer hover:text-amber-300"
+          onclick="notify('CASH DRAWER', 'Signal sent to COM3. Current cash drawer balance: ₹42,650.00')"
+        >
+          <svg
+            class="w-3 h-3 text-amber-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+            ></path>
+          </svg>
+          <span
+            >POS Cash Drawer:
+            <strong class="text-amber-400">OPEN ₹42,650.00</strong></span
+          >
+        </div>
+        <span class="text-slate-700">|</span>
+        <div class="flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span
+            >NIC GST Portal:
+            <strong class="text-emerald-400">CONNECTED</strong></span
+          >
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span
+          >Memory: <strong class="text-slate-200">412MB / 4096MB</strong></span
+        >
+        <span>Response: <strong class="text-emerald-400">1.8ms</strong></span>
+        <span
+          onclick="notify('LOCK TERMINAL', 'Terminal locked for Cashier R. Deshmukh. PIN required.')"
+          class="text-red-400 hover:text-red-300 cursor-pointer font-bold"
+          >[Ctrl+Q] Lock Terminal</span
+        >
+      </div>
+    </footer>
+
+    <!-- ========================================================================= -->
+    <!-- 5. INTERACTIVE NOTIFICATION POPUP (ZERO ALERT)                            -->
+    <!-- ========================================================================= -->
+    <div
+      id="grn-toast"
+      class="fixed bottom-10 right-5 bg-[#0a1222] border-2 border-cyan-400 text-white px-3.5 py-2.5 rounded shadow-2xl z-50 flex items-center gap-2.5"
+    >
+      <div
+        class="w-6 h-6 rounded bg-cyan-950 border border-cyan-400 flex items-center justify-center text-cyan-300 shrink-0"
+      >
+        <svg
+          class="w-3.5 h-3.5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          ></path>
+        </svg>
+      </div>
+      <div>
+        <div
+          id="toast-title"
+          class="text-[10px] font-bold text-cyan-300 uppercase"
+        >
+          SYSTEM DISPATCH
+        </div>
+        <div id="toast-desc" class="text-[9px] text-slate-200">
+          Command processed successfully.
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 6. MODALS DIALOGUES                                                       -->
+    <!-- ========================================================================= -->
+
+    <!-- Modal: Vendor Details (F2) -->
+    <div
+      id="modal-vendor"
+      class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-3"
+    >
+      <div
+        class="bg-[#0b1220] border-2 border-blue-500 rounded-lg max-w-md w-full p-4 shadow-2xl font-mono"
+      >
+        <div
+          class="flex justify-between items-center border-b border-slate-700 pb-1.5 mb-2.5"
+        >
+          <span class="text-[11.5px] font-bold text-white uppercase"
+            >[F2] VENDOR AUDIT CARD</span
+          >
+          <button
+            onclick="closeModal('modal-vendor')"
+            class="text-slate-400 hover:text-white font-bold text-lg"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="space-y-2 text-[10px] text-slate-300">
+          <div>
+            <div class="text-[8.5px] text-slate-400">SUPPLIER LEGAL NAME:</div>
+            <div class="font-bold text-cyan-300">
+              Bosch Automotive Aftermarket India Ltd
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <div class="text-[8.5px] text-slate-400">GSTIN:</div>
+              <div class="text-slate-100 font-bold">29AACB1402H1Z2</div>
+            </div>
+            <div>
+              <div class="text-[8.5px] text-slate-400">STATE CODE:</div>
+              <div class="text-slate-100 font-bold">
+                29 (Karnataka - Bengaluru Plant)
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="text-[8.5px] text-slate-400">
+              DEFAULT TAX STRUCTURE:
+            </div>
+            <div class="text-amber-300 font-semibold">
+              Inter-State 18% IGST with Input Tax Credit
+            </div>
+          </div>
+          <div>
+            <div class="text-[8.5px] text-slate-400">
+              OUTSTANDING LEDGER BALANCE:
+            </div>
+            <div class="text-slate-200 font-bold">
+              ₹4,82,410.00 Cr (30 Days Net Terms)
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-end pt-3 border-t border-slate-800 mt-3">
+          <button
+            onclick="closeModal('modal-vendor')"
+            class="px-3 py-1 bg-slate-800 text-slate-200 rounded text-[9.5px]"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Debit Note Dialog (F11) -->
+    <div
+      id="modal-debit-note"
+      class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-3"
+    >
+      <div
+        class="bg-[#0b1220] border-2 border-pink-500 rounded-lg max-w-md w-full p-4 shadow-2xl font-mono"
+      >
+        <div
+          class="flex justify-between items-center border-b border-slate-700 pb-1.5 mb-2.5"
+        >
+          <span class="text-[11.5px] font-bold text-pink-300 uppercase"
+            >[F11] ISSUE DEBIT NOTE TO VENDOR</span
+          >
+          <button
+            onclick="closeModal('modal-debit-note')"
+            class="text-slate-400 hover:text-white font-bold text-lg"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="space-y-2 text-[10px] text-slate-300">
+          <div class="p-2 bg-[#170a1a] border border-pink-700/50 rounded">
+            <div class="text-[8.5px] text-pink-400 font-bold">
+              NOTE IDENTIFIER: #DN-2024-0199
+            </div>
+            <div class="font-bold text-white mt-0.5">
+              Bosch Automotive Aftermarket India Ltd
+            </div>
+            <div class="text-[9px] text-slate-400 mt-1">
+              Reason: 02 units BOS-FLT-D012 rejected on receipt due to broken
+              tamper seal.
+            </div>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-800">
+            <span>Debit Value (Taxable + IGST):</span>
+            <span class="text-pink-400 font-bold text-[11.5px]">₹1,140.22</span>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-800 mt-3">
+          <button
+            onclick="closeModal('modal-debit-note')"
+            class="px-3 py-1 bg-slate-800 text-slate-300 rounded text-[9.5px]"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="confirmDebitNote()"
+            class="px-3 py-1 bg-pink-700 hover:bg-pink-600 text-white font-bold rounded text-[9.5px]"
+          >
+            Dispatch Note to Vendor
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Branch Selector -->
+    <div
+      id="modal-branch"
+      class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-3"
+    >
+      <div
+        class="bg-[#0b1220] border-2 border-slate-600 rounded-lg max-w-sm w-full p-4 shadow-2xl font-mono"
+      >
+        <div
+          class="flex justify-between items-center border-b border-slate-700 pb-1.5 mb-2"
+        >
+          <span class="text-[11px] font-bold text-white uppercase"
+            >SWITCH RECEIVING WAREHOUSE HUB</span
+          >
+          <button
+            onclick="closeModal('modal-branch')"
+            class="text-slate-400 hover:text-white font-bold text-lg"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="space-y-1.5 text-[10px]">
+          <button
+            onclick="setBranch('Lalit Automotive - Main Hub Branch #01')"
+            class="w-full text-left p-2 rounded bg-[#101726] hover:bg-[#162136] text-cyan-300 font-bold border border-cyan-600/40"
+          >
+            Lalit Automotive - Main Hub Branch #01
+          </button>
+          <button
+            onclick="setBranch('Lalit Spares & Depot - MIDC Industrial #02')"
+            class="w-full text-left p-2 rounded bg-[#0b101c] hover:bg-[#162136] text-slate-300 border border-slate-700"
+          >
+            Lalit Spares & Depot - MIDC Industrial #02
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 7. APPLICATION LOGIC & STATE ENGINE                                       -->
+    <!-- ========================================================================= -->
+    <script>
+      // Inward Ledger Items (Exact data from screenshot)
+      let grnRows = [
+        {
+          id: 1,
+          partCode: "BOS-PLG-0242",
+          desc: "Bosch Spark Plug Super 4 Nickel",
+          extra: "(Set of 4)",
+          barcode: "4047024128911",
+          hsn: "8511",
+          poQty: 100,
+          recvQty: 100,
+          rejShort: 0,
+          rejBadge: "",
+          accQty: 100,
+          purRate: 420.0,
+          trdPct: 12.0,
+          cshPct: 2.0,
+          taxableRt: 362.21,
+          igstPct: 18,
+          landedU: 427.41,
+          mrpNew: 620.0,
+          marginPct: 45.0,
+        },
+        {
+          id: 2,
+          partCode: "BOS-WPR-2416",
+          desc: 'Clear Advantage Wiper Blade 24"+16" Pair',
+          extra: "[OEM Kit]",
+          barcode: "4047025881023",
+          hsn: "8512",
+          poQty: 50,
+          recvQty: 50,
+          rejShort: 0,
+          rejBadge: "",
+          accQty: 50,
+          purRate: 340.0,
+          trdPct: 10.0,
+          cshPct: 2.0,
+          taxableRt: 299.88,
+          igstPct: 18,
+          landedU: 353.86,
+          mrpNew: 540.0,
+          marginPct: 52.6,
+        },
+        {
+          id: 3,
+          partCode: "BOS-FLT-D012",
+          desc: "Diesel Fuel Filter Cartridge",
+          extra: "(Mahindra mHawk)",
+          barcode: "4047026771920",
+          hsn: "8421",
+          poQty: 40,
+          recvQty: 38,
+          rejShort: 2,
+          rejBadge: "2 [dmg seal]",
+          accQty: 38,
+          purRate: 580.0,
+          trdPct: 15.0,
+          cshPct: 2.0,
+          taxableRt: 483.14,
+          igstPct: 18,
+          landedU: 570.11,
+          mrpNew: 850.0,
+          marginPct: 49.1,
+        },
+        {
+          id: 4,
+          partCode: "BOS-RLY-1205",
+          desc: "Automotive 5-Pin Mini Relay 12V 30A",
+          extra: "[Universal]",
+          barcode: "4047021110098",
+          hsn: "8536",
+          poQty: 200,
+          recvQty: 200,
+          rejShort: 0,
+          rejBadge: "",
+          accQty: 200,
+          purRate: 85.0,
+          trdPct: 8.0,
+          cshPct: 2.0,
+          taxableRt: 76.64,
+          igstPct: 18,
+          landedU: 90.43,
+          mrpNew: 145.0,
+          marginPct: 60.3,
+        },
+      ];
+
+      let selectedRowId = 3; // Row 03 is selected by default in screenshot
+      let filterOnlyUnmatched = false;
+
+      // Render GRN Table
+      function renderGrnTable() {
+        const tbody = document.getElementById("grn-table-body");
+        let html = "";
+
+        const itemsToRender = filterOnlyUnmatched
+          ? grnRows.filter((r) => r.rejShort > 0)
+          : grnRows;
+
+        itemsToRender.forEach((row, idx) => {
+          const isSelected = row.id === selectedRowId;
+          const rowNo = String(idx + 1).padStart(2, "0");
+
+          let rejCell = `<span class="text-slate-600">0</span>`;
+          if (row.rejBadge) {
+            rejCell = `<span class="bg-[#380e38] text-pink-300 border border-pink-500/60 font-bold px-1.5 py-0.2 rounded text-[8.5px]">${row.rejBadge}</span>`;
+          }
+
+          html += `
+          <tr 
+            onclick="selectRow(${row.id})"
+            class="${
+              isSelected ? "selected-row" : ""
+            } cursor-pointer transition group"
+          >
+            <td class="py-1 px-1.5 text-center text-slate-500 font-mono">${rowNo}</td>
+            <td class="py-1 px-2 font-bold text-cyan-400">${row.partCode}</td>
+            <td class="py-1 px-2.5 font-medium text-slate-100 font-ui flex items-center gap-1.5">
+              <span>${row.desc}</span>
+              ${
+                row.extra
+                  ? `<span class="text-slate-400 text-[9px] ${
+                      row.extra.includes("[") ? "text-emerald-400" : ""
+                    }">${row.extra}</span>`
+                  : ""
+              }
+            </td>
+            <td class="py-1 px-2 text-slate-400 font-mono">${row.barcode}</td>
+            <td class="py-1 px-1.5 text-center text-slate-400">${row.hsn}</td>
+            <td class="py-1 px-1.5 text-right text-slate-400">${row.poQty}</td>
+            <td class="py-1 px-1.5 text-right font-bold text-cyan-300">${
+              row.recvQty
+            }</td>
+            <td class="py-1 px-1.5 text-center">${rejCell}</td>
+            <td class="py-1 px-1.5 text-right font-bold text-emerald-400">${
+              row.accQty
+            }</td>
+            <td class="py-1 px-2 text-right text-slate-300">₹${row.purRate.toFixed(
+              2
+            )}</td>
+            <td class="py-1 px-1.5 text-center text-slate-400">${row.trdPct.toFixed(
+              1
+            )}%</td>
+            <td class="py-1 px-1.5 text-center text-slate-400">${row.cshPct.toFixed(
+              1
+            )}%</td>
+            <td class="py-1 px-2 text-right text-slate-200">₹${row.taxableRt.toFixed(
+              2
+            )}</td>
+            <td class="py-1 px-1.5 text-center text-cyan-400">${
+              row.igstPct
+            }%</td>
+            <td class="py-1 px-2 text-right text-cyan-300 font-bold">₹${row.landedU.toFixed(
+              2
+            )}</td>
+            <td class="py-1 px-2 text-right text-amber-300 font-bold">₹${row.mrpNew.toFixed(
+              2
+            )}</td>
+            <td class="py-1 px-1.5 text-center text-emerald-400 font-bold">${row.marginPct.toFixed(
+              1
+            )}%</td>
+          </tr>
+        `;
+        });
+
+        // Prompt Row 05 for scan / barcode
+        if (!filterOnlyUnmatched) {
+          html += `
+          <tr class="bg-[#080f1e] text-slate-500 font-mono">
+            <td class="py-1 px-1.5 text-center text-slate-600">05</td>
+            <td class="py-1 px-2 text-slate-400">[Scan Barcode or F3 Search]</td>
+            <td class="py-1 px-2.5 text-slate-400" colspan="15">-- Ready for next line entry from PO-2024-0318 -</td>
+          </tr>
+        `;
+        }
+
+        tbody.innerHTML = html;
+      }
+
+      function selectRow(id) {
+        selectedRowId = id;
+        const row = grnRows.find((r) => r.id === id);
+        const focusLbl = document.getElementById("lbl-active-focus");
+        const banner = document.getElementById("exception-alert-banner");
+        const descText = document.getElementById("exception-desc-text");
+
+        if (row) {
+          if (row.rejShort > 0) {
+            focusLbl.textContent = `ROW #${id} (Damaged Seal Exception)`;
+            focusLbl.className = "text-amber-300 font-bold";
+            descText.textContent = `Item ${row.partCode} short ${row.rejShort} units due to damaged seal on cargo carton.`;
+            banner.style.display = "flex";
+          } else {
+            focusLbl.textContent = `ROW #${id} (${row.partCode} - Verified Inward)`;
+            focusLbl.className = "text-emerald-300 font-bold";
+            descText.textContent = `Item ${row.partCode} completely accepted (${row.accQty} Pcs). Zero variance.`;
+          }
+        }
+        renderGrnTable();
+      }
+
+      function toggleUnmatchedFilter() {
+        filterOnlyUnmatched = !filterOnlyUnmatched;
+        const btn = document.getElementById("btn-filter-unmatched");
+        if (filterOnlyUnmatched) {
+          btn.className =
+            "bg-blue-600 text-white border border-blue-400 px-2 py-0.5 rounded flex items-center gap-1 text-[9px]";
+          notify(
+            "FILTER APPLIED",
+            "Displaying only unmatched/rejected lines (1 row found)."
+          );
+        } else {
+          btn.className =
+            "bg-[#101726] hover:bg-[#18243c] text-slate-300 border border-[#1f2c46] px-2 py-0.5 rounded flex items-center gap-1 text-[9px] transition";
+          notify(
+            "FILTER CLEARED",
+            "Restored full inward PO linked register view (4 active lines)."
+          );
+        }
+        renderGrnTable();
+      }
+
+      function triggerClaimSupplier() {
+        notify(
+          "CLAIM DISPATCHED",
+          "Supplier Claim filed for 2 units BOS-FLT-D012 with Bosch Logistics Portal."
+        );
+      }
+
+      function commitGRN() {
+        notify(
+          "GRN COMMITTED [F9]",
+          "Voucher #PUR-2024-0492 / GRN #GRN-8921 saved to Sybase store. 388 barcode labels sent to COM3."
+        );
+      }
+
+      function postVendorLedger() {
+        notify(
+          "VENDOR LEDGER [F10]",
+          "Credited ₹1,19,368.80 to Bosch Automotive Aftermarket India Ltd Ledger."
+        );
+      }
+
+      function generateDebitNote() {
+        openModal("modal-debit-note");
+      }
+
+      function confirmDebitNote() {
+        closeModal("modal-debit-note");
+        notify(
+          "DEBIT NOTE ISSUED",
+          "Debit Note DN-2024-0199 for ₹1,140.22 dispatched to Bosch Bangalore vendor account."
+        );
+      }
+
+      function discardGRNDraft() {
+        notify(
+          "DRAFT CANCELED",
+          "GRN inward session cleared. Terminal reset to PO selection queue."
+        );
+      }
+
+      function triggerPrintLabel() {
+        notify(
+          "THERMAL STICKER QUEUE",
+          "Printing 388 thermal bin stickers on COM3 at 203 DPI."
+        );
+      }
+
+      // Modal Helpers
+      function openModal(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove("hidden");
+      }
+      function closeModal(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.add("hidden");
+      }
+      function closeAllModals() {
+        document
+          .querySelectorAll(".modal-overlay")
+          .forEach((m) => m.classList.add("hidden"));
+      }
+
+      function setBranch(name) {
+        document.getElementById("active-branch-name").textContent = name;
+        closeModal("modal-branch");
+        notify("BRANCH SWITCHED", `Inward unloading assigned to ${name}`);
+      }
+
+      function focusSearch() {
+        const inp = document.getElementById("global-sku-search");
+        if (inp) inp.focus();
+        notify(
+          "SEARCH FOCUS [F3]",
+          "Query parts by Part Code, OEM Number, or EAN-13 Barcode."
+        );
+      }
+
+      function handleSearch(term) {
+        if (term.length > 2) {
+          notify(
+            "CATALOG SEARCH",
+            `Matched PO items across Bosch supply chain for "${term}".`
+          );
+        }
+      }
+
+      function notify(title, desc) {
+        const toast = document.getElementById("grn-toast");
+        document.getElementById("toast-title").textContent = title;
+        document.getElementById("toast-desc").textContent = desc;
+        toast.classList.add("active");
+        setTimeout(() => {
+          toast.classList.remove("active");
+        }, 3500);
+      }
+
+      function startLiveClock() {
+        const clock = document.getElementById("live-ist-clock");
+        function tick() {
+          const d = new Date();
+          const h = String(d.getHours()).padStart(2, "0");
+          const m = String(d.getMinutes()).padStart(2, "0");
+          const s = String(d.getSeconds()).padStart(2, "0");
+          if (clock) clock.textContent = `${h}:${m}:${s}`;
+        }
+        setInterval(tick, 1000);
+        tick();
+      }
+
+      // Keyboard Hotkey Interceptor
+      document.addEventListener("keydown", (e) => {
+        const isInput = ["INPUT", "SELECT", "TEXTAREA"].includes(
+          document.activeElement.tagName
+        );
+
+        if (e.key === "Escape") {
+          closeAllModals();
+          return;
+        }
+
+        if (e.key === "F9") {
+          e.preventDefault();
+          commitGRN();
+          return;
+        }
+        if (e.key === "F10") {
+          e.preventDefault();
+          postVendorLedger();
+          return;
+        }
+        if (e.key === "F11") {
+          e.preventDefault();
+          generateDebitNote();
+          return;
+        }
+        if (e.key === "F2") {
+          e.preventDefault();
+          openModal("modal-vendor");
+          return;
+        }
+        if (e.key === "F3") {
+          e.preventDefault();
+          focusSearch();
+          return;
+        }
+
+        if (e.ctrlKey && e.key.toLowerCase() === "k") {
+          e.preventDefault();
+          focusSearch();
+          return;
+        }
+        if (e.altKey && e.key.toLowerCase() === "p") {
+          e.preventDefault();
+          triggerPrintLabel();
+          return;
+        }
+
+        // Arrow navigation across rows
+        if (!isInput) {
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            const curIdx = grnRows.findIndex((r) => r.id === selectedRowId);
+            if (curIdx < grnRows.length - 1) {
+              selectRow(grnRows[curIdx + 1].id);
+            }
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            const curIdx = grnRows.findIndex((r) => r.id === selectedRowId);
+            if (curIdx > 0) {
+              selectRow(grnRows[curIdx - 1].id);
+            }
+          }
+        }
+      });
+
+      window.onload = function () {
+        startLiveClock();
+        renderGrnTable();
+        selectRow(3);
+      };
+    </script>
+  </body>
+</html>
