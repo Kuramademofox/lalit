@@ -1,0 +1,3955 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LALIT AUTOMOTIVE ERP v5.2.4 Enterprise Spares Edition</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: JetBrains Mono and Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg-terminal: #06090e;
+        --bg-header: #0a0f19;
+        --bg-panel: #0d121c;
+        --bg-row-alt: #0a0e17;
+        --border-dim: #151d2c;
+        --border-mid: #1d283c;
+        --border-bright: #2d3e5e;
+        --cyan-bright: #00f2fe;
+        --emerald-bright: #10b981;
+        --amber-bright: #f59e0b;
+        --blue-accent: #1e5dd8;
+      }
+
+      * {
+        box-sizing: border-box;
+        user-select: none;
+      }
+
+      body {
+        font-family: "JetBrains Mono", monospace;
+        background-color: var(--bg-terminal);
+        color: #cbd5e1;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        font-size: 11px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .font-ui {
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Scrollbars */
+      ::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #080c14;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1e2a42;
+        border-radius: 2px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #3b82f6;
+      }
+
+      /* Glows */
+      .glow-cyan {
+        text-shadow: 0 0 8px rgba(0, 242, 254, 0.45);
+      }
+      .glow-green {
+        text-shadow: 0 0 8px rgba(16, 185, 129, 0.45);
+      }
+      .glow-amber {
+        text-shadow: 0 0 8px rgba(245, 158, 11, 0.45);
+      }
+
+      /* Dense ERP Grid Tables */
+      .erp-grid th {
+        background-color: #0c121e;
+        border-bottom: 1px solid #1b263b;
+        border-right: 1px solid #141c2c;
+        color: #8fa0ba;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+      }
+      .erp-grid td {
+        border-bottom: 1px solid #121824;
+        border-right: 1px solid #0f1520;
+        white-space: nowrap;
+      }
+      .erp-grid tr:hover {
+        background-color: #0e1626;
+      }
+      .erp-grid tr.row-selected {
+        background: linear-gradient(
+          90deg,
+          rgba(30, 93, 216, 0.35) 0%,
+          rgba(14, 42, 95, 0.2) 100%
+        ) !important;
+        outline: 1px solid #00f2fe;
+      }
+
+      /* Modal Backdrop */
+      .modal-overlay {
+        background-color: rgba(3, 6, 12, 0.85);
+        backdrop-filter: blur(3px);
+      }
+
+      /* Toast */
+      #erp-toast {
+        transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateY(120%);
+        opacity: 0;
+      }
+      #erp-toast.active {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body class="selection:bg-cyan-500 selection:text-black">
+    <!-- ========================================================================= -->
+    <!-- 1. PERSISTENT GLOBAL TOP BAR                                              -->
+    <!-- ========================================================================= -->
+    <header
+      class="bg-[#090e18] border-b border-[#182338] px-3 py-1 flex items-center justify-between z-30 shrink-0"
+    >
+      <!-- Left: Brand & Hub Selector -->
+      <div class="flex items-center gap-3">
+        <div
+          class="flex items-center gap-2 cursor-pointer"
+          onclick="notify('LALIT AUTOMOTIVE ERP', 'Enterprise Spares Suite v5.2.4 Node WRK-03 Online')"
+        >
+          <div
+            class="w-6 h-6 rounded bg-gradient-to-br from-blue-700 via-indigo-600 to-cyan-500 flex items-center justify-center p-0.5 shadow-md shadow-blue-900/40"
+          >
+            <svg
+              class="w-3.5 h-3.5 text-white"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <rect x="2" y="7" width="20" height="14" rx="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+          </div>
+          <div class="leading-tight">
+            <div
+              class="font-bold text-white text-[11px] tracking-wider uppercase flex items-center gap-1.5"
+            >
+              <span>LALIT AUTOMOTIVE ERP</span>
+            </div>
+            <div class="text-[8.5px] text-slate-400">
+              v5.2.4 Enterprise Spares Edition
+            </div>
+          </div>
+        </div>
+
+        <!-- Branch Picker -->
+        <div
+          onclick="openModal('modal-branch')"
+          class="flex items-center bg-[#101726] border border-[#1f2b42] hover:border-slate-400 rounded px-2 py-0.5 text-[10px] cursor-pointer transition"
+        >
+          <span
+            class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-2 animate-pulse"
+          ></span>
+          <span id="active-branch-name" class="text-slate-200 font-medium"
+            >Lalit Automotive - Main Hub Branch #01</span
+          >
+          <svg
+            class="w-2.5 h-2.5 ml-2 text-slate-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            ></path>
+          </svg>
+        </div>
+
+        <!-- Financial Year -->
+        <span
+          class="bg-[#0e1d28] border border-cyan-800/60 text-cyan-400 px-1.5 py-0.2 rounded text-[9px] font-bold"
+        >
+          FY 2024-25
+        </span>
+      </div>
+
+      <!-- Center: Universal Parts Search -->
+      <div class="flex-1 max-w-lg mx-3">
+        <div class="relative flex items-center">
+          <svg
+            class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            ></path>
+          </svg>
+          <input
+            id="global-sku-search"
+            type="text"
+            placeholder="Search 1,00,000+ Parts / OEM SKU (e.g. BRK, VAL, OIL)..."
+            oninput="handleUniversalSearch(this.value)"
+            class="w-full bg-[#0c1220] border border-[#1e2a40] focus:border-cyan-400 focus:outline-none rounded pl-8 pr-16 py-0.5 text-[10.5px] text-cyan-200 placeholder-slate-500 transition"
+          />
+          <div class="absolute right-1.5 flex items-center gap-1">
+            <kbd
+              onclick="focusSearch()"
+              class="bg-[#162136] text-slate-400 text-[8.5px] px-1 py-0.2 rounded border border-[#273754] cursor-pointer"
+              >Ctrl+K</kbd
+            >
+            <kbd
+              onclick="focusSearch()"
+              class="bg-[#162136] text-slate-400 text-[8.5px] px-1 py-0.2 rounded border border-[#273754] cursor-pointer"
+              >F3</kbd
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Clock & Cashier Session -->
+      <div class="flex items-center gap-3">
+        <!-- Live Clock -->
+        <div
+          class="flex items-center gap-1 text-slate-200 bg-[#0e1524] px-2 py-0.5 rounded border border-[#1b253a]"
+        >
+          <svg
+            class="w-3 h-3 text-cyan-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span
+            id="live-ist-clock"
+            class="text-[10.5px] font-bold text-cyan-300 glow-cyan"
+            >14:38:22</span
+          >
+          <span class="text-[8px] text-slate-400">IST</span>
+        </div>
+
+        <!-- Cashier User -->
+        <div
+          onclick="notify('CASHIER PROFILE', 'R. Deshmukh | Station WRK-03 | Terminal Session Validated')"
+          class="flex items-center gap-2 pl-2 border-l border-slate-800 cursor-pointer"
+        >
+          <div class="text-right leading-tight">
+            <div class="text-[10.5px] font-bold text-slate-100">
+              R. Deshmukh
+            </div>
+            <div
+              class="text-[7.5px] text-amber-400 font-semibold uppercase tracking-wider"
+            >
+              CHIEF COUNTER CASHIER
+            </div>
+          </div>
+          <div
+            class="w-6 h-6 rounded-full border border-amber-500/50 bg-amber-950/40 flex items-center justify-center"
+          >
+            <svg
+              class="w-4 h-4 text-amber-300"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ========================================================================= -->
+    <!-- 2. HOTKEYS & VIEW SUB-HEADER RIBBON                                       -->
+    <!-- ========================================================================= -->
+    <div
+      class="bg-[#080c16] border-b border-[#162034] px-3 py-0.5 flex items-center justify-between text-[9px] shrink-0"
+    >
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <span class="text-slate-500 font-bold uppercase text-[8.5px] mr-1"
+          >HOTKEYS:</span
+        >
+        <button
+          onclick="notify('HELP [F1]', 'ERP Navigation: F4=Counter POS, F5=100K+ Inventory, F3=Search, F12=Commit Invoice, Esc=Close Overlays')"
+          class="hover:bg-slate-700/50 bg-[#101726] border border-[#1e2a40] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F1]</span> Help
+        </button>
+        <button
+          onclick="handleDateHotkey()"
+          class="hover:bg-slate-700/50 bg-[#101726] border border-[#1e2a40] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F2]</span> Date / SKU
+        </button>
+        <button
+          onclick="focusSearch()"
+          class="hover:bg-slate-700/50 bg-[#101726] border border-[#1e2a40] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F3]</span> Part Lookup
+        </button>
+        <button
+          onclick="switchView('pos')"
+          id="hk-btn-pos"
+          class="bg-blue-600/30 border border-blue-500 text-blue-200 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-cyan-300 font-bold">[F4]</span> Sales POS
+        </button>
+        <button
+          onclick="switchView('inventory')"
+          id="hk-btn-inv"
+          class="hover:bg-slate-700/50 bg-[#101726] border border-[#1e2a40] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F5]</span> Inventory
+        </button>
+        <button
+          onclick="notify('PURCHASE GRN [F6]', 'Redirecting to Inward Goods Receipt Ledger...')"
+          class="hover:bg-slate-700/50 bg-[#101726] border border-[#1e2a40] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F6]</span> Purchase GRN
+        </button>
+        <button
+          onclick="notify('LEDGER [F7]', 'Opening Garage B2B Credit & Customer Ledger...')"
+          class="hover:bg-slate-700/50 bg-[#101726] border border-[#1e2a40] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F7]</span> Ledger
+        </button>
+        <button
+          onclick="notify('ANALYTICS [F8]', 'Opening Real-time Movement & Spares Analytics...')"
+          class="hover:bg-slate-700/50 bg-[#101726] border border-[#1e2a40] text-slate-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-blue-400 font-bold">[F8]</span> Analytics
+        </button>
+        <button
+          onclick="triggerPrintToken()"
+          class="hover:bg-slate-700/50 bg-[#101726] border border-[#1e2a40] text-amber-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-amber-400 font-bold">[Alt+P]</span> Print Token
+        </button>
+        <button
+          onclick="closeAllModals()"
+          class="hover:bg-slate-700/50 bg-[#101726] border border-[#1e2a40] text-red-300 px-1.5 py-0.2 rounded"
+        >
+          <span class="text-red-400 font-bold">[Esc]</span> Back
+        </button>
+      </div>
+
+      <!-- Active Mode Indicator -->
+      <div class="flex items-center gap-3 text-slate-400">
+        <div>
+          VIEW:
+          <strong
+            id="top-view-indicator"
+            class="text-cyan-300 font-bold uppercase"
+            >COUNTER POS BILLING (F4)</strong
+          >
+        </div>
+        <span class="text-slate-700">|</span>
+        <div>
+          NIC GST: <strong class="text-emerald-400">CONNECTED (LIVE)</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 3. MAIN APP LAYOUT (SIDEBAR + ACTIVE TAB CONTAINER)                       -->
+    <!-- ========================================================================= -->
+    <div class="flex-1 flex overflow-hidden">
+      <!-- LEFT SIDEBAR: Navigation Modules -->
+      <aside
+        class="w-48 bg-[#070b14] border-r border-[#151f33] flex flex-col justify-between shrink-0"
+      >
+        <div>
+          <div
+            class="px-3 py-1.5 border-b border-[#121a2c] flex items-center justify-between text-[8.5px] font-bold text-slate-400 uppercase tracking-wider"
+          >
+            <span>MODULES NAVIGATION</span>
+            <span
+              class="text-emerald-400 flex items-center gap-1 font-semibold text-[8px]"
+            >
+              <span
+                class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"
+              ></span>
+              ONLINE
+            </span>
+          </div>
+
+          <nav class="p-1 space-y-1">
+            <!-- Module 1: POS (F4) -->
+            <button
+              id="nav-pos"
+              onclick="switchView('pos')"
+              class="w-full flex items-center justify-between px-2.5 py-2 rounded bg-blue-600 text-white font-medium text-[10.5px] shadow-lg shadow-blue-700/30 text-left transition"
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-3.5 h-3.5 text-blue-200"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <span>Counter POS Billing</span>
+              </div>
+              <span
+                class="text-[9px] bg-blue-800 text-blue-100 px-1 py-0.2 rounded font-bold"
+                >F4</span
+              >
+            </button>
+
+            <!-- Module 2: Inventory (F5) -->
+            <button
+              id="nav-inv"
+              onclick="switchView('inventory')"
+              class="w-full flex items-center justify-between px-2.5 py-1.5 rounded text-slate-400 hover:text-slate-200 hover:bg-[#0f1728] transition text-[10.5px] text-left"
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-3.5 h-3.5 text-slate-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                  ></path>
+                </svg>
+                <span>100K+ Inventory</span>
+              </div>
+              <span
+                class="text-[9px] bg-[#142034] text-slate-400 px-1 py-0.2 rounded"
+                >F5</span
+              >
+            </button>
+
+            <!-- Module 3: GRN (F6) -->
+            <button
+              onclick="notify('PURCHASE GRN', 'Purchase Order & Inward GRN Entry Node Ready (F6).')"
+              class="w-full flex items-center justify-between px-2.5 py-1.5 rounded text-slate-400 hover:text-slate-200 hover:bg-[#0f1728] transition text-[10.5px] text-left"
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-3.5 h-3.5 text-slate-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  ></path>
+                </svg>
+                <span>Purchase GRN Entry</span>
+              </div>
+              <span
+                class="text-[9px] bg-[#142034] text-slate-400 px-1 py-0.2 rounded"
+                >F6</span
+              >
+            </button>
+
+            <!-- Module 4: Ledger (F7) -->
+            <button
+              onclick="notify('GARAGE LEDGER', 'Opening SpeedX & Wholesale Customer Aging Ledger (F7).')"
+              class="w-full flex items-center justify-between px-2.5 py-1.5 rounded text-slate-400 hover:text-slate-200 hover:bg-[#0f1728] transition text-[10.5px] text-left"
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-3.5 h-3.5 text-slate-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                  ></path>
+                </svg>
+                <span>Garage & Customer Ledger</span>
+              </div>
+              <span
+                class="text-[9px] bg-[#142034] text-slate-400 px-1 py-0.2 rounded"
+                >F7</span
+              >
+            </button>
+
+            <!-- Module 5: Analytics (F8) -->
+            <button
+              onclick="notify('STOCK ANALYTICS', 'Calculating Fast-moving / Dead-stock Spares Telemetry (F8).')"
+              class="w-full flex items-center justify-between px-2.5 py-1.5 rounded text-slate-400 hover:text-slate-200 hover:bg-[#0f1728] transition text-[10.5px] text-left"
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-3.5 h-3.5 text-slate-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  ></path>
+                </svg>
+                <span>Stock Analytics</span>
+              </div>
+              <span
+                class="text-[9px] bg-[#142034] text-slate-400 px-1 py-0.2 rounded"
+                >F8</span
+              >
+            </button>
+          </nav>
+        </div>
+
+        <!-- Station Diagnostics Pill in sidebar -->
+        <div
+          class="p-2 border-t border-[#151f33] bg-[#070b12] text-[8.5px] space-y-1"
+        >
+          <div class="flex justify-between text-slate-400">
+            <span>STATION ID:</span>
+            <span class="text-slate-200 font-bold">WRK-COUNTER-03</span>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>THERMAL PRINTER:</span>
+            <button
+              onclick="notify('PRINTER COM3', 'Thermal Receipt Port COM3 Online (203 DPI)')"
+              class="text-emerald-400 hover:underline font-bold"
+            >
+              READY (COM3)
+            </button>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>BARCODE SCANNER:</span>
+            <span class="text-cyan-400 font-bold">USB ACTIVE</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ======================================================================= -->
+      <!-- VIEW CONTAINER 1: COUNTER POS BILLING (F4)                              -->
+      <!-- ======================================================================= -->
+      <div id="view-pos-container" class="flex-1 flex overflow-hidden">
+        <!-- Central Billing Workspace -->
+        <section
+          class="flex-1 flex flex-col bg-[#06090e] overflow-y-auto overflow-x-hidden relative border-r border-[#151f33]"
+        >
+          <!-- Header Metadata Strip -->
+          <div
+            class="bg-[#0b101c] border-b border-[#182338] px-3 py-1 flex items-center justify-between text-[10px] shrink-0"
+          >
+            <div class="flex items-center gap-3">
+              <div>
+                <span class="text-slate-500">SERIES:</span>
+                <span class="text-slate-200 font-semibold">GST-A</span>
+                <span
+                  id="pos-inv-number"
+                  class="text-amber-400 font-bold ml-0.5"
+                  >#INV-2024-8842</span
+                >
+              </div>
+              <div class="text-slate-400 flex items-center gap-1">
+                <svg
+                  class="w-3 h-3 text-slate-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>24-Oct-2024</span>
+                <span class="text-slate-500">14:41 IST</span>
+              </div>
+              <div class="flex items-center gap-1 text-slate-300">
+                <svg
+                  class="w-3 h-3 text-cyan-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <span class="text-cyan-300 font-bold">POS-01</span> Vikram S.
+              </div>
+              <div
+                class="bg-emerald-950/80 border border-emerald-500/50 text-emerald-400 px-1.5 py-0.2 rounded text-[9px] font-bold"
+              >
+                TAX INVOICE (B2B)
+              </div>
+            </div>
+
+            <div class="text-slate-400 flex items-center gap-2">
+              <span class="text-[8.5px] text-slate-500 uppercase"
+                >DOCK HOTKEYS:</span
+              >
+              <button
+                onclick="openModal('modal-customer')"
+                class="hover:text-cyan-400"
+              >
+                <strong class="text-cyan-400">[Alt+C]</strong> Change Cust
+              </button>
+              <button
+                onclick="openModal('modal-vehicle')"
+                class="hover:text-cyan-400"
+              >
+                <strong class="text-cyan-400">[Alt+V]</strong> Vehicle
+              </button>
+              <button onclick="holdCurrentBill()" class="hover:text-amber-400">
+                <strong class="text-amber-400">[Alt+H]</strong> Hold Bill
+              </button>
+            </div>
+          </div>
+
+          <!-- Customer & Vehicle Context Bar -->
+          <div
+            class="bg-[#0e1424] border-b border-[#182338] p-2 px-3 flex flex-wrap items-center justify-between gap-2 shrink-0"
+          >
+            <div class="flex items-center gap-2">
+              <span class="text-[9px] text-blue-400 font-bold"
+                >[F2] CUSTOMER / GARAGE LEDGER</span
+              >
+              <div
+                onclick="openModal('modal-customer')"
+                class="flex items-center bg-[#131d30] hover:bg-[#18243c] border border-[#21304c] rounded px-2 py-0.5 text-[10.5px] cursor-pointer transition"
+              >
+                <svg
+                  class="w-3.5 h-3.5 text-amber-400 mr-1.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                  ></path>
+                </svg>
+                <span id="pos-cust-name" class="font-bold text-slate-100"
+                  >SpeedX Multi-brand Garage</span
+                >
+                <span
+                  id="pos-cust-gstin"
+                  class="text-slate-400 text-[9.5px] ml-1.5"
+                  >(GSTIN: 27AABCS1429B1Z8)</span
+                >
+                <svg
+                  class="w-3 h-3 ml-1.5 text-slate-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
+                </svg>
+              </div>
+              <!-- Credit Limit status tag -->
+              <div
+                onclick="notify('CREDIT LINE', 'SpeedX Garage: Approved ₹1.5L credit limit, 15-day Net payment cycle.')"
+                class="bg-[#141d2e] border border-amber-600/40 text-amber-300 px-2 py-0.5 rounded text-[9.5px] cursor-pointer hover:border-amber-400 transition"
+              >
+                Credit: <span class="font-bold">₹1,50,000</span>
+                <span class="text-emerald-400 font-semibold"
+                  >(Avail: ₹42,500)</span
+                >
+              </div>
+            </div>
+
+            <!-- Vehicle and Price Tier -->
+            <div class="flex items-center gap-2">
+              <div
+                onclick="openModal('modal-vehicle')"
+                class="flex items-center bg-[#131d30] hover:bg-[#18243c] border border-[#21304c] rounded px-2 py-0.5 text-[10.5px] cursor-pointer transition"
+              >
+                <span class="text-[9px] text-blue-400 font-bold mr-1.5"
+                  >[ALT+V]</span
+                >
+                <span id="pos-veh-reg" class="font-bold text-cyan-300"
+                  >MH-12-DE-4412</span
+                >
+                <span id="pos-veh-desc" class="text-slate-300 ml-1.5 font-ui"
+                  >(Hyundai Creta 1.5L CRDi 2021)</span
+                >
+                <span
+                  class="ml-2 bg-emerald-950 border border-emerald-500/60 text-emerald-300 px-1 py-0.2 text-[8px] font-bold rounded"
+                  >Verified RC</span
+                >
+              </div>
+
+              <!-- Price Tier -->
+              <div
+                onclick="togglePriceTier()"
+                class="flex items-center gap-1.5 bg-[#141d2e] hover:bg-[#1a263c] border border-[#23334f] px-2 py-0.5 rounded text-[10px] cursor-pointer transition"
+              >
+                <span class="text-[8.5px] text-amber-400 font-bold"
+                  >[ALT+T] PRICE TIER</span
+                >
+                <span id="pos-tier-name" class="font-bold text-amber-300"
+                  >Garage Wholesale</span
+                >
+                <span
+                  id="pos-tier-badge"
+                  class="bg-amber-900/60 border border-amber-600/50 text-amber-300 text-[8.5px] px-1 rounded font-bold"
+                  >TRD-18%</span
+                >
+                <span id="pos-tier-desc" class="text-[9px] text-slate-400"
+                  >Discount 18%</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Ledger Strip -->
+          <div
+            class="bg-[#090d16] px-3 py-1 border-b border-[#182338] flex items-center justify-between text-[9.5px] shrink-0"
+          >
+            <div class="flex items-center gap-3">
+              <span class="font-bold text-slate-200 tracking-wider uppercase"
+                >COUNTER SALES LEDGER</span
+              >
+              <span class="text-slate-400"
+                >Lines:
+                <strong class="text-cyan-400" id="pos-lines-count"
+                  >04 Active</strong
+                ></span
+              >
+              <span class="text-slate-600">|</span>
+              <span class="text-slate-400"
+                >Grid Mode:
+                <span class="text-emerald-400"
+                  >Direct Barcode / SKU Auto-Entry</span
+                ></span
+              >
+            </div>
+            <div class="flex items-center gap-2">
+              <span
+                class="text-blue-400 font-bold bg-[#14233a] border border-blue-500/40 px-1.5 py-0.2 rounded text-[8.5px]"
+                >FAST EDIT ACTIVE</span
+              >
+              <span class="text-slate-400 text-[9px]"
+                >Click +/- on row to adjust quantity</span
+              >
+            </div>
+          </div>
+
+          <!-- Sales POS Table -->
+          <div class="flex-1 overflow-x-auto relative">
+            <table
+              class="w-full erp-grid text-left border-collapse text-[10.5px]"
+            >
+              <thead>
+                <tr class="text-[9px] uppercase">
+                  <th class="py-1 px-1.5 w-7 text-center">#</th>
+                  <th class="py-1 px-2 w-32">PART SKU</th>
+                  <th class="py-1 px-2.5">OEM DESCRIPTION</th>
+                  <th class="py-1 px-2 w-44">FITMENT COMPATIBILITY</th>
+                  <th class="py-1 px-1.5 w-16 text-center">BIN</th>
+                  <th class="py-1 px-1.5 w-14 text-center">HSN</th>
+                  <th class="py-1 px-1.5 w-12 text-right">STK</th>
+                  <th class="py-1 px-1.5 w-14 text-center text-cyan-300">
+                    QTY
+                  </th>
+                  <th class="py-1 px-2 w-20 text-right">MRP</th>
+                  <th class="py-1 px-2 w-24 text-right text-amber-300">RATE</th>
+                  <th class="py-1 px-1.5 w-12 text-center text-orange-400">
+                    D%
+                  </th>
+                  <th class="py-1 px-1.5 w-10 text-center">ACT</th>
+                </tr>
+              </thead>
+              <tbody id="pos-table-body" class="divide-y divide-[#121927]">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+
+            <!-- Row 05 Autocomplete Candidate Drawer -->
+            <div
+              id="pos-autocomplete-drawer"
+              class="mx-3 my-2 bg-[#091120] border-2 border-blue-600/90 rounded p-2 relative z-20 shadow-2xl"
+            >
+              <div
+                class="flex items-center justify-between border-b border-[#1b2b48] pb-1 mb-1.5 text-[9px]"
+              >
+                <div class="flex items-center gap-2">
+                  <svg
+                    class="w-3 h-3 text-cyan-400 animate-spin"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke-width="3"
+                      stroke-dasharray="32"
+                      stroke-dashoffset="12"
+                    ></circle>
+                  </svg>
+                  <span class="font-bold text-slate-200"
+                    >LIVE AUTO-COMPLETE PART LOOKUP RESULTS</span
+                  >
+                  <span class="text-slate-400"
+                    >(Press
+                    <kbd
+                      class="bg-blue-900 text-cyan-300 px-1 rounded border border-blue-500"
+                      >[ENTER]</kbd
+                    >
+                    to inject into Row 05, [DOWN] to toggle)</span
+                  >
+                </div>
+                <div id="pos-candidates-tag" class="text-cyan-400 font-bold">
+                  2 Candidates Matching "VAL-CLU"
+                </div>
+              </div>
+
+              <!-- Candidate 1 -->
+              <div
+                id="candidate-card-1"
+                onclick="injectCandidate(1)"
+                class="group bg-[#111f38] border border-blue-500/70 hover:border-cyan-400 rounded p-1.5 mb-1 flex items-center justify-between cursor-pointer transition"
+              >
+                <div class="flex items-center gap-2.5">
+                  <div
+                    class="bg-blue-950 border border-blue-500 text-cyan-300 font-bold px-1.5 py-0.5 rounded text-[10.5px]"
+                  >
+                    VAL-CLU-3091
+                  </div>
+                  <div>
+                    <div
+                      class="font-bold text-slate-100 flex items-center gap-2 text-[11px]"
+                    >
+                      <span>Clutch Plate Assembly (Heavy Duty 200mm)</span>
+                      <span
+                        class="text-[8.5px] text-slate-400 bg-[#0a1120] px-1 py-0.2 rounded border border-slate-700"
+                        >OEM: 22100-M74L00</span
+                      >
+                    </div>
+                    <div
+                      class="text-[9.5px] text-slate-400 flex items-center gap-2 mt-0.5"
+                    >
+                      <span>Maruti Swift / Dzire DDiS Diesel</span>
+                      <span class="text-slate-600">•</span>
+                      <span class="text-amber-400">Loc: Rack D-08</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-3 text-right">
+                  <div>
+                    <span class="text-emerald-400 font-bold text-[11px]"
+                      >14 Pcs</span
+                    >
+                    <div class="text-[8px] text-slate-400">Avail</div>
+                  </div>
+                  <div>
+                    <span class="text-slate-400 line-through text-[9.5px]"
+                      >MRP: ₹4,900</span
+                    >
+                    <div class="text-amber-300 font-bold text-[11.5px]">
+                      WS: ₹4,150.00
+                    </div>
+                  </div>
+                  <button
+                    class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-2 py-0.5 rounded text-[9.5px]"
+                  >
+                    ENTER
+                  </button>
+                </div>
+              </div>
+
+              <!-- Candidate 2 -->
+              <div
+                id="candidate-card-2"
+                onclick="injectCandidate(2)"
+                class="group bg-[#0b1322] border border-[#1a273e] hover:bg-[#101b30] rounded p-1.5 flex items-center justify-between cursor-pointer transition"
+              >
+                <div class="flex items-center gap-2.5">
+                  <div
+                    class="bg-[#0e172a] border border-slate-700 text-slate-300 font-bold px-1.5 py-0.5 rounded text-[10.5px]"
+                  >
+                    VAL-CLU-3092
+                  </div>
+                  <div>
+                    <div
+                      class="font-bold text-slate-300 group-hover:text-white flex items-center gap-2 text-[11px]"
+                    >
+                      <span>Clutch Release Bearing (Hydraulic CSC)</span>
+                      <span
+                        class="text-[8.5px] text-slate-400 bg-[#0a1120] px-1 py-0.2 rounded border border-slate-700"
+                        >OEM: 23820-M79J00</span
+                      >
+                    </div>
+                    <div
+                      class="text-[9.5px] text-slate-400 flex items-center gap-2 mt-0.5"
+                    >
+                      <span>Maruti Swift / Baleno Petrol K12</span>
+                      <span class="text-slate-600">•</span>
+                      <span class="text-amber-400">Loc: Rack D-09</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-3 text-right">
+                  <div>
+                    <span class="text-emerald-400 font-bold text-[11px]"
+                      >22 Pcs</span
+                    >
+                    <div class="text-[8px] text-slate-400">Avail</div>
+                  </div>
+                  <div>
+                    <span class="text-slate-400 line-through text-[9.5px]"
+                      >MRP: ₹1,850</span
+                    >
+                    <div class="text-amber-300 font-bold text-[11.5px]">
+                      WS: ₹1,420.00
+                    </div>
+                  </div>
+                  <button
+                    class="bg-[#16233a] group-hover:bg-blue-600 text-slate-300 group-hover:text-white font-bold px-2 py-0.5 rounded text-[9.5px]"
+                  >
+                    INJECT
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- POS Bottom Telemetry Bar -->
+          <div
+            class="p-2 border-t border-[#182338] bg-[#090e18] flex items-center justify-between gap-3 text-[9.5px] shrink-0"
+          >
+            <div
+              onclick="notify('WAREHOUSE INDEX', 'Sybase local ledger: 142,850 SKUs mapped across Zone B & Aisle 4.')"
+              class="flex items-center gap-2 bg-[#0e1524] border border-[#1b273d] px-2 py-1 rounded flex-1 cursor-pointer"
+            >
+              <svg
+                class="w-3.5 h-3.5 text-cyan-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                ></path>
+              </svg>
+              <div>
+                <div class="text-slate-400 text-[8.5px] uppercase">
+                  WAREHOUSE STOCK INDEX
+                </div>
+                <div class="text-slate-100 font-bold">
+                  142,850 Units
+                  <span class="text-emerald-400 text-[8.5px]">Verified</span>
+                </div>
+              </div>
+              <span
+                class="ml-auto text-emerald-400 text-[8px] bg-emerald-950/80 px-1 py-0.5 rounded border border-emerald-600/40"
+                >Real-time sync</span
+              >
+            </div>
+
+            <div
+              onclick="notify('GST TAX TELEMETRY', 'Auto-split enabled: 9% CGST + 9% SGST with 28% luxury automotive tier.')"
+              class="flex items-center gap-2 bg-[#0e1524] border border-[#1b273d] px-2 py-1 rounded flex-1 cursor-pointer"
+            >
+              <svg
+                class="w-3.5 h-3.5 text-emerald-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
+              </svg>
+              <div>
+                <div class="text-slate-400 text-[8.5px] uppercase">
+                  GST SPLIT BREAKUP
+                </div>
+                <div class="text-slate-100 font-bold">
+                  CGST+SGST (18%) +
+                  <span class="text-cyan-400">IGST (28%)</span>
+                </div>
+              </div>
+              <span
+                class="ml-auto text-cyan-400 text-[8px] bg-cyan-950/80 px-1 py-0.5 rounded border border-cyan-600/40"
+                >E-Invoice Valid</span
+              >
+            </div>
+
+            <div
+              onclick="toggleCoreDeposit()"
+              class="flex items-center gap-2 bg-[#0e1524] border border-[#1b273d] px-2 py-1 rounded flex-1 cursor-pointer"
+            >
+              <svg
+                class="w-3.5 h-3.5 text-amber-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                ></path>
+              </svg>
+              <div>
+                <div class="text-slate-400 text-[8.5px] uppercase">
+                  OLD CORE SURCHARGE
+                </div>
+                <div id="pos-core-label" class="text-slate-100 font-bold">
+                  ₹0.00
+                  <span class="text-slate-400 text-[8.5px]"
+                    >(No Core Return)</span
+                  >
+                </div>
+              </div>
+              <span
+                class="ml-auto text-amber-400 text-[8px] bg-amber-950/80 px-1 py-0.5 rounded border border-amber-600/40"
+                >[Alt+O]</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- Right Summary & Settlement Drawer -->
+        <aside
+          class="w-80 bg-[#080c16] flex flex-col justify-between p-3 shrink-0 overflow-y-auto"
+        >
+          <div>
+            <!-- Title -->
+            <div
+              class="flex items-center justify-between border-b border-[#182338] pb-1.5 mb-2"
+            >
+              <div
+                class="font-bold text-slate-100 text-[11.5px] tracking-wide uppercase"
+              >
+                INVOICE TOTALING
+              </div>
+              <span
+                id="pos-summary-items-count"
+                class="text-[9px] bg-[#121c2e] border border-blue-500/40 text-blue-300 px-1.5 py-0.2 rounded font-bold"
+                >6 ITEMS (4 LINES)</span
+              >
+            </div>
+
+            <!-- Line Math -->
+            <div
+              class="space-y-1 text-[10.5px] border-b border-[#182338] pb-2.5 mb-2.5"
+            >
+              <div class="flex justify-between text-slate-300">
+                <span>Gross Value:</span>
+                <span id="pos-math-gross" class="text-slate-100 font-bold"
+                  >₹7,260.00</span
+                >
+              </div>
+              <div class="flex justify-between text-amber-400">
+                <span>Trade Discount (Tier):</span>
+                <span id="pos-math-discount" class="font-bold">- ₹684.20</span>
+              </div>
+              <div
+                class="flex justify-between text-slate-200 border-t border-dashed border-slate-800 pt-1"
+              >
+                <span class="font-semibold">Net Taxable Amount:</span>
+                <span id="pos-math-taxable" class="font-bold text-white"
+                  >₹6,575.80</span
+                >
+              </div>
+              <div class="flex justify-between text-slate-400 text-[9.5px]">
+                <span>CGST @ 9.0%:</span>
+                <span id="pos-math-cgst">₹544.75</span>
+              </div>
+              <div class="flex justify-between text-slate-400 text-[9.5px]">
+                <span>SGST @ 9.0%:</span>
+                <span id="pos-math-sgst">₹544.75</span>
+              </div>
+              <div class="flex justify-between text-slate-400 text-[9.5px]">
+                <span>IGST / High-Rate Tier (28%):</span>
+                <span id="pos-math-igst">₹130.90</span>
+              </div>
+              <div class="flex justify-between text-emerald-400 text-[9.5px]">
+                <span>Rounding Off:</span>
+                <span id="pos-math-round">+₹0.20</span>
+              </div>
+            </div>
+
+            <!-- Big Payable Banner -->
+            <div
+              class="bg-gradient-to-b from-[#091a24] to-[#0c2626] border border-emerald-500/60 rounded p-2 text-center mb-2.5 shadow-lg shadow-emerald-950/40"
+            >
+              <div
+                class="text-[9px] text-emerald-300 uppercase tracking-widest font-semibold"
+              >
+                NET PAYABLE AMOUNT (INR)
+              </div>
+              <div
+                id="pos-math-payable"
+                class="text-[24px] font-bold text-emerald-400 glow-green tracking-tight my-0.5"
+              >
+                ₹7,796.00
+              </div>
+              <div
+                id="pos-math-words"
+                class="text-[8px] text-emerald-200/90 font-medium uppercase tracking-wider font-ui"
+              >
+                SEVEN THOUSAND SEVEN HUNDRED NINETY-SIX ONLY
+              </div>
+            </div>
+
+            <!-- Split Payment Allocation -->
+            <div class="mb-2.5">
+              <div
+                class="text-[9px] font-bold text-slate-400 uppercase mb-1 flex justify-between"
+              >
+                <span>SPLIT PAYMENT ALLOCATION:</span>
+                <span
+                  onclick="autoBalancePayments()"
+                  class="text-cyan-400 hover:underline cursor-pointer"
+                  >[AUTO-FIT]</span
+                >
+              </div>
+              <div class="grid grid-cols-2 gap-1.5 text-[10px]">
+                <div
+                  onclick="setPaymentMode('cash')"
+                  class="bg-[#0e1524] hover:bg-[#141f33] border border-[#1e2a40] p-1.5 rounded cursor-pointer transition"
+                >
+                  <span class="text-[8.5px] text-slate-400 font-bold"
+                    >[F8] CASH</span
+                  >
+                  <div
+                    id="pos-split-cash"
+                    class="text-amber-300 font-bold text-[11px] mt-0.5"
+                  >
+                    ₹2,000.00
+                  </div>
+                </div>
+                <div
+                  onclick="openModal('modal-upi')"
+                  class="bg-[#0e1c25] hover:bg-[#142633] border border-emerald-600/50 p-1.5 rounded cursor-pointer transition"
+                >
+                  <span class="text-[8.5px] text-emerald-300 font-bold"
+                    >[F9] UPI / QR</span
+                  >
+                  <div
+                    id="pos-split-upi"
+                    class="text-emerald-400 font-bold text-[11px] mt-0.5"
+                  >
+                    ₹5,796.00
+                  </div>
+                </div>
+                <div
+                  onclick="setPaymentMode('credit')"
+                  class="bg-[#0e1524] hover:bg-[#141f33] border border-[#1e2a40] p-1.5 rounded cursor-pointer transition"
+                >
+                  <span class="text-[8.5px] text-slate-400 font-bold"
+                    >[F10] CREDIT LEDGER</span
+                  >
+                  <div
+                    id="pos-split-credit"
+                    class="text-slate-400 font-bold text-[10px] mt-0.5"
+                  >
+                    ₹0.00 (SpeedX)
+                  </div>
+                </div>
+                <div
+                  onclick="setPaymentMode('card')"
+                  class="bg-[#0e1524] hover:bg-[#141f33] border border-[#1e2a40] p-1.5 rounded cursor-pointer transition"
+                >
+                  <span class="text-[8.5px] text-slate-400 font-bold"
+                    >[F11] CARD POS</span
+                  >
+                  <div
+                    id="pos-split-card"
+                    class="text-slate-400 font-bold text-[10px] mt-0.5"
+                  >
+                    ₹0.00 (Swipe)
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Commit & Print Button -->
+            <button
+              onclick="commitAndPrintInvoice()"
+              class="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-bold py-2 px-3 rounded flex items-center justify-between shadow-lg shadow-blue-700/40 border border-blue-400 transition"
+            >
+              <div class="flex items-center gap-1.5">
+                <svg
+                  class="w-3.5 h-3.5 text-white animate-pulse"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                  ></path>
+                </svg>
+                <span class="text-[11px] tracking-wider uppercase"
+                  >COMMIT & PRINT</span
+                >
+              </div>
+              <span
+                class="bg-blue-800 text-blue-100 text-[9px] px-1.5 py-0.2 rounded border border-blue-400/50"
+                >[F12 / Enter]</span
+              >
+            </button>
+
+            <!-- Sub-Actions -->
+            <div class="grid grid-cols-3 gap-1 mt-1.5 text-[9px]">
+              <button
+                onclick="triggerPrintSlip('a4')"
+                class="bg-[#101726] hover:bg-[#172238] text-slate-200 border border-[#1e2a40] py-1 rounded text-center transition"
+              >
+                <strong class="text-cyan-400">[Alt+P]</strong> A4 Print
+              </button>
+              <button
+                onclick="holdCurrentBill()"
+                class="bg-[#101726] hover:bg-[#172238] text-amber-300 border border-amber-800/40 py-1 rounded text-center transition"
+              >
+                <strong class="text-amber-400">[Alt+H]</strong> Hold (F2)
+              </button>
+              <button
+                onclick="discardCurrentBill()"
+                class="bg-[#101726] hover:bg-[#172238] text-red-400 border border-red-900/40 py-1 rounded text-center transition"
+              >
+                <strong class="text-red-400">[Alt+D]</strong> Discard
+              </button>
+            </div>
+          </div>
+
+          <!-- Garage Token Memo -->
+          <div class="bg-[#0e1424] border border-[#1c273e] rounded p-2 mt-2">
+            <div
+              class="flex items-center justify-between text-[8.5px] text-slate-400 border-b border-slate-800 pb-0.5 mb-1"
+            >
+              <span class="font-bold text-slate-300 uppercase"
+                >GARAGE MEMO / TOKEN</span
+              >
+              <span class="text-amber-400 font-bold"
+                >Bay #4 Mechanic: Raju</span
+              >
+            </div>
+            <p class="text-[9.5px] text-slate-300 leading-normal font-ui">
+              Immediate installation: Front pads replacement + 10K km routine
+              service oil/filter flush. Keep old parts for customer inspection.
+            </p>
+          </div>
+        </aside>
+      </div>
+
+      <!-- ======================================================================= -->
+      <!-- VIEW CONTAINER 2: 100K+ INVENTORY (F5)                                 -->
+      <!-- ======================================================================= -->
+      <div
+        id="view-inventory-container"
+        class="flex-1 flex flex-col bg-[#06090e] overflow-hidden hidden"
+      >
+        <!-- 3A. Metric KPI Ribbon -->
+        <div
+          class="grid grid-cols-6 border-b border-[#182338] bg-[#090e18] text-[9.5px] shrink-0 divide-x divide-[#182338]"
+        >
+          <div class="px-2.5 py-1.5">
+            <div class="text-slate-400 text-[8px] uppercase tracking-wide">
+              CATALOGUED SKUS
+            </div>
+            <div class="text-[13px] font-bold text-white tracking-tight mt-0.5">
+              1,42,850
+            </div>
+          </div>
+          <div class="px-2.5 py-1.5">
+            <div
+              class="text-slate-400 text-[8px] uppercase tracking-wide flex items-center gap-1"
+            >
+              <svg
+                class="w-3 h-3 text-cyan-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                ></path>
+              </svg>
+              <span>TOTAL PHYSICAL STOCK</span>
+            </div>
+            <div class="text-[13px] font-bold text-white tracking-tight mt-0.5">
+              3,92,410
+              <span class="text-slate-400 text-[9px] font-normal">Units</span>
+            </div>
+          </div>
+          <div class="px-2.5 py-1.5 bg-[#08151f]/40">
+            <div
+              class="text-slate-400 text-[8px] uppercase tracking-wide flex items-center gap-1"
+            >
+              <svg
+                class="w-3 h-3 text-emerald-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"
+                ></path>
+              </svg>
+              <span>VALUATION (W/H MRP)</span>
+            </div>
+            <div
+              class="text-[13px] font-bold text-emerald-400 glow-green tracking-tight mt-0.5"
+            >
+              ₹ 1,84,32,900
+            </div>
+          </div>
+          <div
+            onclick="setInventoryStatusFilter('low')"
+            class="px-2.5 py-1.5 cursor-pointer hover:bg-[#101828] transition"
+          >
+            <div
+              class="text-slate-400 text-[8px] uppercase tracking-wide flex items-center gap-1"
+            >
+              <svg
+                class="w-3 h-3 text-amber-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                ></path>
+              </svg>
+              <span>CRITICAL LOW SKUS</span>
+            </div>
+            <div
+              class="text-[13px] font-bold text-amber-400 glow-amber tracking-tight mt-0.5"
+            >
+              412
+              <span class="text-[9px] text-amber-300/80 font-normal"
+                >[Reorder]</span
+              >
+            </div>
+          </div>
+          <div
+            onclick="setInventoryStatusFilter('out')"
+            class="px-2.5 py-1.5 cursor-pointer hover:bg-[#101828] transition"
+          >
+            <div
+              class="text-slate-400 text-[8px] uppercase tracking-wide flex items-center gap-1"
+            >
+              <svg
+                class="w-3 h-3 text-red-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <span>STOCKOUT / ZERO BINS</span>
+            </div>
+            <div
+              class="text-[13px] font-bold text-red-400 tracking-tight mt-0.5"
+            >
+              1,820
+              <span class="text-slate-400 text-[9px] font-normal">SKUs</span>
+            </div>
+          </div>
+          <div
+            onclick="notify('IN-TRANSIT GRN', 'Supplier Shipments: 4,120 Pcs scheduled via VRL Logistics dispatch.')"
+            class="px-2.5 py-1.5 cursor-pointer hover:bg-[#101828] transition"
+          >
+            <div
+              class="text-slate-400 text-[8px] uppercase tracking-wide flex items-center justify-between"
+            >
+              <span>IN-TRANSIT GRN EXPECTED</span>
+              <svg
+                class="w-3.5 h-3.5 text-blue-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"
+                ></path>
+              </svg>
+            </div>
+            <div
+              class="text-[13px] font-bold text-cyan-300 tracking-tight mt-0.5"
+            >
+              4,120
+              <span class="text-slate-400 text-[9px] font-normal">Pcs</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3B. Inventory Search & Actions Strip -->
+        <div
+          class="bg-[#0b101c] p-2 border-b border-[#182338] flex flex-col gap-1.5 shrink-0"
+        >
+          <div class="flex items-center justify-between gap-2">
+            <!-- Live Input -->
+            <div class="relative flex-1">
+              <svg
+                class="w-3.5 h-3.5 text-cyan-400 absolute left-2.5 top-2 pointer-events-none"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
+              <input
+                id="inv-local-search"
+                type="text"
+                placeholder="Search Part No, OEM #, Description, Vehicle Make/Model, Barcode... (F3)"
+                oninput="filterInventoryData(this.value)"
+                class="w-full bg-[#080d16] border border-[#1e2c46] focus:border-cyan-400 focus:outline-none rounded pl-8 pr-28 py-1.5 text-[10.5px] text-cyan-200 placeholder-slate-500"
+              />
+              <div class="absolute right-2 top-1.5 flex items-center gap-1.5">
+                <span
+                  class="bg-[#14233a] border border-cyan-500/40 text-cyan-300 text-[8px] px-1 py-0.2 rounded font-bold"
+                  >F3</span
+                >
+                <span
+                  class="text-emerald-400 text-[8px] font-bold flex items-center gap-1"
+                >
+                  <span
+                    class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"
+                  ></span>
+                  LIVE QUERY ACTIVE
+                </span>
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex items-center gap-1.5 shrink-0 text-[9.5px]">
+              <button
+                onclick="openModal('modal-new-sku')"
+                class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-2 py-1.5 rounded flex items-center gap-1 shadow border border-blue-400 transition"
+              >
+                <svg
+                  class="w-3 h-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2.5"
+                    d="M12 4v16m8-8H4"
+                  ></path>
+                </svg>
+                <span>NEW SKU ENTRY</span>
+                <span
+                  class="bg-blue-800 text-blue-100 text-[8px] px-1 rounded ml-0.5"
+                  >F2</span
+                >
+              </button>
+              <button
+                onclick="triggerBulkBarcode()"
+                class="bg-[#101726] hover:bg-[#162136] text-slate-200 border border-[#1e2a40] px-2 py-1.5 rounded flex items-center gap-1 transition"
+              >
+                <svg
+                  class="w-3 h-3 text-amber-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+                  ></path>
+                </svg>
+                <span>BULK BARCODE</span>
+                <span class="text-amber-400 text-[8px] font-bold">ALT+B</span>
+              </button>
+              <button
+                onclick="triggerExportTally()"
+                class="bg-[#101726] hover:bg-[#162136] text-slate-200 border border-[#1e2a40] px-2 py-1.5 rounded flex items-center gap-1 transition"
+              >
+                <svg
+                  class="w-3 h-3 text-emerald-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  ></path>
+                </svg>
+                <span>EXPORT TALLY/XML</span>
+                <span class="text-emerald-400 text-[8px] font-bold">ALT+E</span>
+              </button>
+              <button
+                onclick="triggerReorderSheet()"
+                class="bg-[#101726] hover:bg-[#162136] text-slate-200 border border-[#1e2a40] px-2 py-1.5 rounded flex items-center gap-1 transition"
+              >
+                <svg
+                  class="w-3 h-3 text-cyan-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  ></path>
+                </svg>
+                <span>STOCK REORDER SHEET</span>
+                <span class="text-cyan-400 text-[8px] font-bold">ALT+R</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Dropdowns & Filter Badges -->
+          <div
+            class="flex items-center justify-between text-[9.5px] flex-wrap gap-2 pt-0.5 border-t border-[#141c2c]"
+          >
+            <div class="flex items-center gap-2 flex-wrap">
+              <div
+                class="flex items-center bg-[#0f1524] border border-[#1e2a40] rounded px-1.5 py-0.5"
+              >
+                <span class="text-slate-400 mr-1 text-[8.5px]">CATEGORY:</span>
+                <select
+                  id="inv-filter-cat"
+                  onchange="runInventoryFilter()"
+                  class="bg-transparent text-slate-200 focus:outline-none cursor-pointer"
+                >
+                  <option value="all" class="bg-[#0b101c]">
+                    All Categories (7)
+                  </option>
+                  <option value="Brakes" class="bg-[#0b101c]">Brakes</option>
+                  <option value="Suspension" class="bg-[#0b101c]">
+                    Suspension
+                  </option>
+                  <option value="Electrical" class="bg-[#0b101c]">
+                    Electrical
+                  </option>
+                  <option value="Lubricants" class="bg-[#0b101c]">
+                    Lubricants
+                  </option>
+                  <option value="Transmission" class="bg-[#0b101c]">
+                    Transmission
+                  </option>
+                  <option value="Belts & Hoses" class="bg-[#0b101c]">
+                    Belts & Hoses
+                  </option>
+                </select>
+              </div>
+
+              <div
+                class="flex items-center bg-[#0f1524] border border-[#1e2a40] rounded px-1.5 py-0.5"
+              >
+                <span class="text-slate-400 mr-1 text-[8.5px]"
+                  >VEHICLE MAKE:</span
+                >
+                <select
+                  id="inv-filter-make"
+                  onchange="runInventoryFilter()"
+                  class="bg-transparent text-slate-200 focus:outline-none cursor-pointer"
+                >
+                  <option value="all" class="bg-[#0b101c]">
+                    All Makes (Pan-India)
+                  </option>
+                  <option value="Hyundai" class="bg-[#0b101c]">Hyundai</option>
+                  <option value="Maruti" class="bg-[#0b101c]">
+                    Maruti Suzuki
+                  </option>
+                  <option value="Tata" class="bg-[#0b101c]">Tata Motors</option>
+                  <option value="Mahindra" class="bg-[#0b101c]">
+                    Mahindra
+                  </option>
+                </select>
+              </div>
+
+              <!-- Quick Filter Badges -->
+              <div class="flex items-center gap-1 ml-1">
+                <button
+                  id="pill-inv-all"
+                  onclick="setInventoryStatusFilter('all')"
+                  class="bg-blue-600 text-white font-bold px-2 py-0.5 rounded text-[9px]"
+                >
+                  All (1,42,850)
+                </button>
+                <button
+                  id="pill-inv-low"
+                  onclick="setInventoryStatusFilter('low')"
+                  class="bg-[#141e30] hover:bg-[#1a2840] text-slate-300 px-2 py-0.5 rounded text-[9px] border border-amber-600/40"
+                >
+                  Low Stock
+                  <span
+                    class="bg-amber-950 text-amber-300 font-bold px-1 rounded text-[8px] ml-0.5 border border-amber-600/50"
+                    >412</span
+                  >
+                </button>
+                <button
+                  id="pill-inv-neg"
+                  onclick="setInventoryStatusFilter('neg')"
+                  class="bg-[#141e30] hover:bg-[#1a2840] text-slate-300 px-2 py-0.5 rounded text-[9px] border border-slate-700"
+                >
+                  Negative
+                  <span
+                    class="bg-slate-800 text-slate-400 font-bold px-1 rounded text-[8px] ml-0.5"
+                    >0</span
+                  >
+                </button>
+                <button
+                  id="pill-inv-out"
+                  onclick="setInventoryStatusFilter('out')"
+                  class="bg-[#141e30] hover:bg-[#1a2840] text-slate-300 px-2 py-0.5 rounded text-[9px] border border-red-700/40"
+                >
+                  Out of Stock
+                  <span
+                    class="bg-red-950 text-red-300 font-bold px-1 rounded text-[8px] ml-0.5 border border-red-600/50"
+                    >1,820</span
+                  >
+                </button>
+                <button
+                  id="pill-inv-surplus"
+                  onclick="setInventoryStatusFilter('surplus')"
+                  class="bg-[#141e30] hover:bg-[#1a2840] text-slate-300 px-2 py-0.5 rounded text-[9px] border border-emerald-700/40"
+                >
+                  Surplus
+                  <span
+                    class="bg-emerald-950 text-emerald-300 font-bold px-1 rounded text-[8px] ml-0.5 border border-emerald-600/50"
+                    >58</span
+                  >
+                </button>
+              </div>
+            </div>
+
+            <!-- Location & Cost Mask Toggle -->
+            <div class="flex items-center gap-3">
+              <div class="text-slate-400 text-[9px]">
+                <span class="text-amber-400">📍</span> WAREHOUSE BIN:
+                <strong class="text-slate-200"
+                  >All Nodes (Central + Front Retail)</strong
+                >
+              </div>
+              <button
+                onclick="toggleCostMask()"
+                id="btn-cost-toggle"
+                class="flex items-center gap-1 bg-[#101726] hover:bg-[#162136] border border-[#1e2a40] px-2 py-0.5 rounded text-slate-300 text-[9px] transition"
+              >
+                <svg
+                  id="cost-eye"
+                  class="w-3 h-3 text-cyan-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"
+                  ></path>
+                </svg>
+                <span id="cost-label">Cost Hidden</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3C. High-Density Inventory Data Table -->
+        <div class="flex-1 overflow-auto relative">
+          <table
+            class="w-full erp-grid text-left border-collapse text-[10.5px]"
+          >
+            <thead class="sticky top-0 z-10 text-[9px]">
+              <tr>
+                <th class="py-1 px-1.5 w-7 text-center">#</th>
+                <th class="py-1 px-2.5 w-32">PART NUMBER</th>
+                <th class="py-1 px-2.5 w-28">OEM CROSS REF</th>
+                <th class="py-1 px-3">DESCRIPTION / SPEC</th>
+                <th class="py-1 px-2 w-24">CATEGORY</th>
+                <th class="py-1 px-2.5 w-52">COMPATIBLE VEHICLES</th>
+                <th class="py-1 px-2 w-24 text-amber-400">RACK / BIN</th>
+                <th class="py-1 px-1.5 w-12 text-center text-slate-400">MIN</th>
+                <th class="py-1 px-1.5 w-12 text-center text-slate-400">MAX</th>
+                <th class="py-1 px-2 w-16 text-right text-cyan-300 font-bold">
+                  STOCK
+                </th>
+                <th class="py-1 px-2 w-20 text-center text-slate-400">
+                  TRANSIT
+                </th>
+                <th class="py-1 px-2 w-20 text-right text-slate-400">
+                  COST RATE
+                </th>
+                <th class="py-1 px-2 w-20 text-right text-amber-300">
+                  WHOLESALE
+                </th>
+                <th class="py-1 px-2 w-20 text-right text-slate-200">
+                  MRP (₹)
+                </th>
+                <th class="py-1 px-1.5 w-10 text-center text-slate-400">TAX</th>
+                <th class="py-1 px-2 w-24 text-center">STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="inventory-table-body" class="divide-y divide-[#121927]">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 3D. Active SKU Detail Telemetry Footer -->
+        <div
+          class="bg-[#0b101c] border-t border-[#182338] px-3 py-1 flex items-center justify-between text-[9.5px] shrink-0"
+        >
+          <div
+            class="flex items-center gap-3 overflow-hidden text-ellipsis whitespace-nowrap"
+          >
+            <div>
+              <span class="text-slate-400">ACTIVE SKU:</span>
+              <strong
+                id="inv-active-sku-name"
+                class="text-cyan-300 font-bold ml-1"
+                >BOS-0986-AB1</strong
+              >
+              <span id="inv-active-sku-desc" class="text-slate-300 ml-1 font-ui"
+                >(Front Brake Disc Rotor Set - Hyundai Creta/Verna)</span
+              >
+            </div>
+            <span class="text-slate-600">|</span>
+            <div>
+              <span class="text-slate-400">PRIMARY SUPPLIER:</span>
+              <strong
+                id="inv-active-sku-sup"
+                class="text-amber-400 font-bold ml-1"
+                >Bosch India Automotive Ltd (Dist. Hub Mumbai)</strong
+              >
+            </div>
+            <span class="text-slate-600">|</span>
+            <div>
+              <span class="text-slate-400">HSN CODE:</span>
+              <strong id="inv-active-sku-hsn" class="text-slate-200 ml-1"
+                >8708.30.00</strong
+              >
+            </div>
+            <span class="text-slate-600">|</span>
+            <div>
+              <span class="text-slate-400">LAST GRN INWARD:</span>
+              <strong id="inv-active-sku-grn" class="text-emerald-400 ml-1"
+                >18-Oct-2024 (Inv #BOS-88219)</strong
+              >
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1 shrink-0 pl-2">
+            <span class="text-[8.5px] text-slate-400 uppercase"
+              >Sync Status:</span
+            >
+            <span
+              class="text-emerald-400 text-[9px] font-bold flex items-center gap-1 bg-emerald-950/70 border border-emerald-600/40 px-1.5 py-0.2 rounded"
+            >
+              <span
+                class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"
+              ></span>
+              REALTIME INDEXED
+            </span>
+          </div>
+        </div>
+
+        <!-- 3E. Direct Actions & Pagination Strip -->
+        <div
+          class="bg-[#080c16] border-t border-[#141d2e] px-3 py-1 flex items-center justify-between text-[9px] shrink-0"
+        >
+          <div class="flex items-center gap-3">
+            <div class="text-slate-400">
+              Displaying:
+              <strong id="inv-display-range" class="text-cyan-400 font-bold"
+                >1 - 07</strong
+              >
+              of <strong class="text-slate-200">1,42,850 SKUs</strong>
+            </div>
+            <span class="text-slate-700">|</span>
+            <div class="text-slate-400">
+              Active Filter:
+              <span
+                class="text-slate-200 bg-[#121c2e] px-1 py-0.2 rounded border border-[#202f4a]"
+                >All Makes • All Warehouses</span
+              >
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="text-slate-500 font-bold uppercase text-[8px]"
+              >DIRECT ACTIONS:</span
+            >
+            <button
+              onclick="editPartSpec()"
+              class="hover:bg-slate-800 text-slate-300 bg-[#101726] border border-[#1e2a40] px-1.5 py-0.2 rounded transition"
+            >
+              <strong class="text-blue-400 font-bold">[Enter]</strong> Edit Part
+              Spec
+            </button>
+            <button
+              onclick="openModal('modal-stock-ledger')"
+              class="hover:bg-slate-800 text-slate-300 bg-[#101726] border border-[#1e2a40] px-1.5 py-0.2 rounded transition"
+            >
+              <strong class="text-amber-400 font-bold">[Space]</strong> Stock
+              In/Out Ledger
+            </button>
+            <button
+              onclick="openModal('modal-substitute')"
+              class="hover:bg-slate-800 text-slate-300 bg-[#101726] border border-[#1e2a40] px-1.5 py-0.2 rounded transition"
+            >
+              <strong class="text-emerald-400 font-bold">[Alt+S]</strong> Cross
+              Substitute Part
+            </button>
+            <span class="text-slate-500 text-[8px] ml-1"
+              >↑/↓ Grid Traverse</span
+            >
+          </div>
+
+          <div class="flex items-center gap-1 font-bold">
+            <button
+              onclick="paginateInventory(-1)"
+              class="px-1.5 py-0.2 rounded bg-[#101726] text-slate-400 hover:text-white border border-[#1e2a40]"
+            >
+              &lt;
+            </button>
+            <span class="text-cyan-300 px-1"
+              >Page <span id="inv-page-num">1</span> / 5,714</span
+            >
+            <button
+              onclick="paginateInventory(1)"
+              class="px-1.5 py-0.2 rounded bg-[#101726] text-slate-400 hover:text-white border border-[#1e2a40]"
+            >
+              &gt;
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 4. PERSISTENT BOTTOM STATUS / HARDWARE DIAGNOSTICS STRIP                  -->
+    <!-- ========================================================================= -->
+    <footer
+      class="bg-[#050810] border-t border-[#151f33] px-3 py-1 text-[8.5px] shrink-0 z-30 flex items-center justify-between text-slate-400"
+    >
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1.5 text-slate-300">
+          <span
+            class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"
+          ></span>
+          <span>142,850 SKUs Indexed - Sybase Local Sync OK</span>
+        </div>
+        <span class="text-slate-700">|</span>
+        <div
+          class="flex items-center gap-1 cursor-pointer hover:text-amber-300"
+          onclick="notify('CASH DRAWER PULSE', 'Signal sent to RJ11 port on COM3. Cash Drawer popped open.')"
+        >
+          <svg
+            class="w-3 h-3 text-amber-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+            ></path>
+          </svg>
+          <span
+            >POS Cash Drawer:
+            <strong class="text-amber-400">OPEN ₹42,650.00</strong></span
+          >
+        </div>
+        <span class="text-slate-700">|</span>
+        <div class="flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span
+            >NIC GST Portal:
+            <strong class="text-emerald-400">CONNECTED</strong></span
+          >
+        </div>
+        <span class="text-slate-700">|</span>
+        <div>
+          IRN / QR Stamp:
+          <strong class="text-emerald-400">STANDBY FOR POST</strong>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span
+          >Memory: <strong class="text-slate-200">412MB / 4096MB</strong></span
+        >
+        <span>Response: <strong class="text-emerald-400">1.8ms</strong></span>
+        <span
+          onclick="notify('LOCK TERMINAL', 'Terminal locked for Cashier R. Deshmukh. PIN required.')"
+          class="text-red-400 hover:text-red-300 cursor-pointer font-bold"
+          >[Ctrl+Q] Lock</span
+        >
+      </div>
+    </footer>
+
+    <!-- ========================================================================= -->
+    <!-- 5. INTERACTIVE NOTIFICATION POPUP (ZERO ALERT)                            -->
+    <!-- ========================================================================= -->
+    <div
+      id="erp-toast"
+      class="fixed bottom-10 right-5 bg-[#0a1220] border-2 border-cyan-400 text-white px-3.5 py-2.5 rounded shadow-2xl z-50 flex items-center gap-2.5"
+    >
+      <div
+        class="w-6 h-6 rounded bg-cyan-950 border border-cyan-400 flex items-center justify-center text-cyan-300 shrink-0"
+      >
+        <svg
+          class="w-3.5 h-3.5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          ></path>
+        </svg>
+      </div>
+      <div>
+        <div
+          id="toast-title"
+          class="text-[10px] font-bold text-cyan-300 uppercase"
+        >
+          SYSTEM DISPATCH
+        </div>
+        <div id="toast-desc" class="text-[9px] text-slate-200">
+          Command processed successfully.
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 6. MODALS DIALOGUES                                                       -->
+    <!-- ========================================================================= -->
+
+    <!-- Modal: Print Receipt (Thermal / A4) -->
+    <div
+      id="modal-print-invoice"
+      class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-3"
+    >
+      <div
+        class="bg-[#0b111e] border-2 border-cyan-500 rounded-lg max-w-md w-full p-4 shadow-2xl font-mono"
+      >
+        <div
+          class="flex justify-between items-center border-b border-slate-700 pb-2 mb-2"
+        >
+          <span
+            class="text-[11.5px] font-bold text-white uppercase"
+            id="print-modal-header"
+            >TAX INVOICE PREVIEW</span
+          >
+          <button
+            onclick="closeModal('modal-print-invoice')"
+            class="text-slate-400 hover:text-white font-bold text-lg"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div
+          class="bg-[#06090f] border border-slate-800 p-2.5 rounded text-[10px] space-y-2 text-slate-300 mb-3 max-h-64 overflow-y-auto"
+        >
+          <div
+            class="text-center font-bold text-white text-[11px] border-b border-dashed border-slate-700 pb-1"
+          >
+            LALIT AUTOMOTIVE ERP - TAX INVOICE
+            <div class="text-[8.5px] text-slate-400">
+              Branch #01 Main Hub • GSTIN: 27AABCL9901M1Z1
+            </div>
+          </div>
+          <div class="flex justify-between text-[9.5px]">
+            <span
+              >Invoice:
+              <strong id="modal-print-inv" class="text-amber-300"
+                >#INV-2024-8842</strong
+              ></span
+            >
+            <span>Date: 24-Oct-2024</span>
+          </div>
+          <div class="text-[9.5px]">
+            Customer:
+            <strong id="modal-print-cust" class="text-cyan-300"
+              >SpeedX Multi-brand Garage</strong
+            >
+          </div>
+          <div
+            class="border-t border-b border-dashed border-slate-700 py-1 space-y-1"
+            id="modal-print-items"
+          >
+            <!-- Populated dynamically -->
+          </div>
+          <div
+            class="flex justify-between font-bold text-emerald-400 text-[11.5px] pt-0.5"
+          >
+            <span>Net Payable:</span>
+            <span id="modal-print-total">₹7,796.00</span>
+          </div>
+          <div class="text-[8px] text-center text-slate-500">
+            NIC IRN: a4f8e3290b41c0e9... Verified E-Invoice QR Generated
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <button
+            onclick="closeModal('modal-print-invoice')"
+            class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 hover:bg-slate-700 text-[10px]"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="confirmSlipPrint()"
+            class="px-3 py-1 rounded bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] flex items-center gap-1 shadow"
+          >
+            <span>Print Slip to COM3</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: UPI QR Payment -->
+    <div
+      id="modal-upi"
+      class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-3"
+    >
+      <div
+        class="bg-[#0a111e] border-2 border-emerald-500 rounded-lg max-w-xs w-full p-4 shadow-2xl text-center font-mono"
+      >
+        <div
+          class="flex justify-between items-center border-b border-slate-700 pb-1.5 mb-2"
+        >
+          <span class="text-[11px] font-bold text-emerald-400 uppercase"
+            >DYNAMIC UPI QR PAYMENT</span
+          >
+          <button
+            onclick="closeModal('modal-upi')"
+            class="text-slate-400 hover:text-white font-bold text-lg"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="bg-white p-2 rounded inline-block mx-auto mb-2 shadow">
+          <svg
+            class="w-32 h-32 mx-auto text-black"
+            viewBox="0 0 100 100"
+            fill="currentColor"
+          >
+            <path
+              d="M0,0 h30 v30 h-30 z M5,5 v20 h20 v-20 z M10,10 h10 v10 h-10 z"
+            />
+            <path
+              d="M70,0 h30 v30 h-30 z M75,5 v20 h20 v-20 z M80,10 h10 v10 h-10 z"
+            />
+            <path
+              d="M0,70 h30 v30 h-30 z M5,75 v20 h20 v-20 z M10,80 h10 v10 h-10 z"
+            />
+            <rect x="35" y="5" width="10" height="20" />
+            <rect x="50" y="10" width="15" height="10" />
+            <rect x="35" y="35" width="30" height="30" />
+            <rect x="70" y="35" width="25" height="10" />
+            <rect x="5" y="35" width="20" height="10" />
+            <rect x="35" y="70" width="10" height="25" />
+            <rect x="50" y="75" width="20" height="10" />
+            <rect x="75" y="75" width="20" height="20" />
+          </svg>
+        </div>
+        <div class="text-[10px] text-slate-300 font-semibold mb-0.5">
+          GooglePay / PhonePe / Paytm
+        </div>
+        <div
+          class="text-[16px] text-emerald-400 font-bold glow-green mb-1.5"
+          id="upi-display-amount"
+        >
+          ₹5,796.00
+        </div>
+        <div class="text-[8.5px] text-slate-400 mb-3">
+          VPA: lalitauto.pay@icici • Status:
+          <span class="text-amber-400 font-bold animate-pulse"
+            >Waiting for customer PIN</span
+          >
+        </div>
+        <div class="flex gap-1.5">
+          <button
+            onclick="closeModal('modal-upi')"
+            class="w-1/2 py-1 rounded bg-slate-800 text-slate-300 text-[9.5px]"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="confirmUpiSimulation()"
+            class="w-1/2 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[9.5px]"
+          >
+            Simulate Success
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Customer Selector -->
+    <div
+      id="modal-customer"
+      class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-3"
+    >
+      <div
+        class="bg-[#0b111e] border-2 border-blue-500 rounded-lg max-w-sm w-full p-4 shadow-2xl font-mono"
+      >
+        <div
+          class="flex justify-between items-center border-b border-slate-700 pb-1.5 mb-2"
+        >
+          <span class="text-[11px] font-bold text-white uppercase"
+            >[F2] SWITCH CUSTOMER / GARAGE</span
+          >
+          <button
+            onclick="closeModal('modal-customer')"
+            class="text-slate-400 hover:text-white font-bold text-lg"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="space-y-1.5 text-[10px]">
+          <div
+            onclick="selectCustomer('SpeedX Multi-brand Garage', '27AABCS1429B1Z8')"
+            class="p-2 bg-[#121c2e] hover:bg-[#18263e] border border-blue-500 rounded cursor-pointer"
+          >
+            <div class="font-bold text-cyan-300">SpeedX Multi-brand Garage</div>
+            <div class="text-[8.5px] text-slate-400">
+              GSTIN: 27AABCS1429B1Z8 • Wholesale Tier (18%)
+            </div>
+          </div>
+          <div
+            onclick="selectCustomer('Apex Motorworks Pune', '27AAMCA8832K1ZP')"
+            class="p-2 bg-[#0d1422] hover:bg-[#18263e] border border-slate-700 rounded cursor-pointer"
+          >
+            <div class="font-bold text-slate-200">Apex Motorworks Pune</div>
+            <div class="text-[8.5px] text-slate-400">
+              GSTIN: 27AAMCA8832K1ZP • Authorized Dealership (22%)
+            </div>
+          </div>
+          <div
+            onclick="selectCustomer('Walk-in Cash Retail Customer', 'UNREGISTERED')"
+            class="p-2 bg-[#0d1422] hover:bg-[#18263e] border border-slate-700 rounded cursor-pointer"
+          >
+            <div class="font-bold text-amber-300">
+              Walk-in Cash Retail Counter
+            </div>
+            <div class="text-[8.5px] text-slate-400">
+              Standard Counter MRP • Direct Cash Settlement
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Vehicle Selector -->
+    <div
+      id="modal-vehicle"
+      class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-3"
+    >
+      <div
+        class="bg-[#0b111e] border-2 border-blue-500 rounded-lg max-w-sm w-full p-4 shadow-2xl font-mono"
+      >
+        <div
+          class="flex justify-between items-center border-b border-slate-700 pb-1.5 mb-2"
+        >
+          <span class="text-[11px] font-bold text-white uppercase"
+            >[ALT+V] FITMENT VEHICLE MAPPING</span
+          >
+          <button
+            onclick="closeModal('modal-vehicle')"
+            class="text-slate-400 hover:text-white font-bold text-lg"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="space-y-1.5 text-[10px]">
+          <div
+            onclick="selectVehicle('MH-12-DE-4412', 'Hyundai Creta 1.5L CRDi 2021')"
+            class="p-2 bg-[#121c2e] hover:bg-[#18263e] border border-cyan-500 rounded cursor-pointer"
+          >
+            <div class="font-bold text-cyan-300">MH-12-DE-4412</div>
+            <div class="text-[8.5px] text-slate-400">
+              Hyundai Creta 1.5L CRDi 2021 (Diesel)
+            </div>
+          </div>
+          <div
+            onclick="selectVehicle('MH-14-BT-9021', 'Maruti Suzuki Swift Dzire 1.3 DDiS')"
+            class="p-2 bg-[#0d1422] hover:bg-[#18263e] border border-slate-700 rounded cursor-pointer"
+          >
+            <div class="font-bold text-slate-200">MH-14-BT-9021</div>
+            <div class="text-[8.5px] text-slate-400">
+              Maruti Suzuki Swift Dzire 1.3 DDiS (Diesel)
+            </div>
+          </div>
+          <div
+            onclick="selectVehicle('MH-02-EE-1184', 'Mahindra XUV700 AX7 AWD')"
+            class="p-2 bg-[#0d1422] hover:bg-[#18263e] border border-slate-700 rounded cursor-pointer"
+          >
+            <div class="font-bold text-slate-200">MH-02-EE-1184</div>
+            <div class="text-[8.5px] text-slate-400">
+              Mahindra XUV700 AX7 AWD 2.2L mHawk
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Branch Selector -->
+    <div
+      id="modal-branch"
+      class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-3"
+    >
+      <div
+        class="bg-[#0b111e] border-2 border-slate-600 rounded-lg max-w-sm w-full p-4 shadow-2xl font-mono"
+      >
+        <div
+          class="flex justify-between items-center border-b border-slate-700 pb-1.5 mb-2"
+        >
+          <span class="text-[11px] font-bold text-white uppercase"
+            >SWITCH BRANCH NODE</span
+          >
+          <button
+            onclick="closeModal('modal-branch')"
+            class="text-slate-400 hover:text-white font-bold text-lg"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="space-y-1.5 text-[10px]">
+          <button
+            onclick="setBranch('Lalit Automotive - Main Hub Branch #01')"
+            class="w-full text-left p-2 rounded bg-[#121c2e] hover:bg-[#18263e] text-cyan-300 font-bold border border-cyan-600/40"
+          >
+            Lalit Automotive - Main Hub Branch #01
+          </button>
+          <button
+            onclick="setBranch('Lalit Spares & Depot - MIDC Industrial #02')"
+            class="w-full text-left p-2 rounded bg-[#0d1422] hover:bg-[#18263e] text-slate-300 border border-slate-700"
+          >
+            Lalit Spares & Depot - MIDC Industrial #02
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: New SKU Entry (F2) -->
+    <div
+      id="modal-new-sku"
+      class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-3"
+    >
+      <div
+        class="bg-[#0b111e] border-2 border-blue-500 rounded-lg max-w-lg w-full p-4 shadow-2xl font-mono"
+      >
+        <div
+          class="flex justify-between items-center border-b border-slate-700 pb-1.5 mb-2"
+        >
+          <span class="text-[11.5px] font-bold text-white uppercase"
+            >[F2] REGISTER SPARE SKU</span
+          >
+          <button
+            onclick="closeModal('modal-new-sku')"
+            class="text-slate-400 hover:text-white font-bold text-lg"
+          >
+            &times;
+          </button>
+        </div>
+        <form
+          onsubmit="handleNewSkuSubmit(event)"
+          class="space-y-2 text-[10px]"
+        >
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-400 text-[8.5px]"
+                >PART SKU NUMBER *</label
+              >
+              <input
+                type="text"
+                id="nsku-part"
+                required
+                placeholder="e.g. BOS-BRK-9901"
+                class="w-full bg-[#070b14] border border-[#202e48] rounded px-2 py-1 text-cyan-300 uppercase focus:outline-none focus:border-cyan-400"
+              />
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[8.5px]"
+                >OEM CROSS REF</label
+              >
+              <input
+                type="text"
+                id="nsku-oem"
+                placeholder="e.g. 58101-1RA00"
+                class="w-full bg-[#070b14] border border-[#202e48] rounded px-2 py-1 text-slate-200 uppercase focus:outline-none focus:border-cyan-400"
+              />
+            </div>
+          </div>
+          <div>
+            <label class="block text-slate-400 text-[8.5px]"
+              >DESCRIPTION / SPEC *</label
+            >
+            <input
+              type="text"
+              id="nsku-desc"
+              required
+              placeholder="e.g. Front Brake Disc Rotor Set (Ceramic)"
+              class="w-full bg-[#070b14] border border-[#202e48] rounded px-2 py-1 text-slate-100 focus:outline-none focus:border-cyan-400"
+            />
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-slate-400 text-[8.5px]">CATEGORY</label>
+              <select
+                id="nsku-cat"
+                class="w-full bg-[#070b14] border border-[#202e48] rounded px-2 py-1 text-slate-200 focus:outline-none"
+              >
+                <option value="Brakes">Brakes</option>
+                <option value="Suspension">Suspension</option>
+                <option value="Electrical">Electrical</option>
+                <option value="Lubricants">Lubricants</option>
+                <option value="Transmission">Transmission</option>
+                <option value="Belts & Hoses">Belts & Hoses</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[8.5px]"
+                >RACK / BIN</label
+              >
+              <input
+                type="text"
+                id="nsku-bin"
+                placeholder="Rack A-05-T1"
+                class="w-full bg-[#070b14] border border-[#202e48] rounded px-2 py-1 text-amber-300 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[8.5px]"
+                >INITIAL STOCK</label
+              >
+              <input
+                type="number"
+                id="nsku-stock"
+                value="25"
+                min="0"
+                class="w-full bg-[#070b14] border border-[#202e48] rounded px-2 py-1 text-emerald-400 focus:outline-none"
+              />
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-slate-400 text-[8.5px]"
+                >WHOLESALE (₹)</label
+              >
+              <input
+                type="number"
+                id="nsku-ws"
+                value="1900"
+                min="0"
+                class="w-full bg-[#070b14] border border-[#202e48] rounded px-2 py-1 text-amber-300 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[8.5px]">MRP (₹)</label>
+              <input
+                type="number"
+                id="nsku-mrp"
+                value="2400"
+                min="0"
+                class="w-full bg-[#070b14] border border-[#202e48] rounded px-2 py-1 text-slate-100 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[8.5px]">TAX</label>
+              <select
+                id="nsku-tax"
+                class="w-full bg-[#070b14] border border-[#202e48] rounded px-2 py-1 text-slate-200 focus:outline-none"
+              >
+                <option value="18%">18% (Standard)</option>
+                <option value="28%">28% (Automotive High)</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+            <button
+              type="button"
+              onclick="closeModal('modal-new-sku')"
+              class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 text-[9.5px]"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-3 py-1 rounded bg-blue-600 hover:bg-blue-500 text-white font-bold text-[9.5px]"
+            >
+              Commit to Sybase
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal: Stock Ledger -->
+    <div
+      id="modal-stock-ledger"
+      class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-3"
+    >
+      <div
+        class="bg-[#0b111e] border-2 border-amber-500 rounded-lg max-w-lg w-full p-4 shadow-2xl font-mono"
+      >
+        <div
+          class="flex justify-between items-center border-b border-slate-700 pb-1.5 mb-2"
+        >
+          <span class="text-[11px] font-bold text-amber-400 uppercase"
+            >[SPACE] STOCK BIN AUDIT TRAIL</span
+          >
+          <button
+            onclick="closeModal('modal-stock-ledger')"
+            class="text-slate-400 hover:text-white font-bold text-lg"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="space-y-1.5 text-[9.5px] max-h-56 overflow-y-auto">
+          <div
+            class="p-2 bg-[#070b14] border border-slate-800 rounded flex justify-between items-center"
+          >
+            <div>
+              <div class="text-emerald-400 font-bold">
+                +18 Units Inward (GRN Entry #GRN-9941)
+              </div>
+              <div class="text-[8px] text-slate-400">
+                Supplier: Bosch India Ltd • 18-Oct-2024 10:14 IST
+              </div>
+            </div>
+            <span class="text-slate-200 font-bold">Bal: 34 Pcs</span>
+          </div>
+          <div
+            class="p-2 bg-[#070b14] border border-slate-800 rounded flex justify-between items-center"
+          >
+            <div>
+              <div class="text-red-400 font-bold">
+                -02 Units Outward (Counter Sale POS-01 #INV-8842)
+              </div>
+              <div class="text-[8px] text-slate-400">
+                Customer: SpeedX Multi-brand Garage • 18-Oct-2024 14:41 IST
+              </div>
+            </div>
+            <span class="text-slate-200 font-bold">Bal: 16 Pcs</span>
+          </div>
+        </div>
+        <div class="flex justify-end pt-2 border-t border-slate-800 mt-2">
+          <button
+            onclick="closeModal('modal-stock-ledger')"
+            class="px-3 py-1 bg-slate-800 text-slate-200 rounded text-[9.5px]"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Cross Substitute -->
+    <div
+      id="modal-substitute"
+      class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-3"
+    >
+      <div
+        class="bg-[#0b111e] border-2 border-emerald-500 rounded-lg max-w-sm w-full p-4 shadow-2xl font-mono"
+      >
+        <div
+          class="flex justify-between items-center border-b border-slate-700 pb-1.5 mb-2"
+        >
+          <span class="text-[11px] font-bold text-emerald-400 uppercase"
+            >[ALT+S] CROSS-SUBSTITUTE CANDIDATE</span
+          >
+          <button
+            onclick="closeModal('modal-substitute')"
+            class="text-slate-400 hover:text-white font-bold text-lg"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="space-y-1.5 text-[10px]">
+          <div
+            onclick="notify('SUBSTITUTE CHOSEN', 'Rane Rotor Set mapped to counter bill.'); closeModal('modal-substitute')"
+            class="p-2 bg-[#070b14] border border-emerald-600/50 rounded flex justify-between items-center hover:border-emerald-400 cursor-pointer"
+          >
+            <div>
+              <div class="text-cyan-300 font-bold">
+                RBL-ROT-280 (Rane Brake)
+              </div>
+              <div class="text-[8.5px] text-slate-400">
+                Direct 280mm Fitment • Rack B-02-R1
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-emerald-400 font-bold">18 Pcs Avail</div>
+              <div class="text-amber-300">₹3,950.00</div>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-end pt-2 border-t border-slate-800 mt-2">
+          <button
+            onclick="closeModal('modal-substitute')"
+            class="px-3 py-1 bg-slate-800 text-slate-200 rounded text-[9.5px]"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 7. APPLICATION ENGINE & INTEGRATED STATE                                  -->
+    <!-- ========================================================================= -->
+    <script>
+      // --- Application State ---
+      let activeModule = "pos"; // 'pos' or 'inventory'
+      let invoiceCounter = 8842;
+      let coreSurcharge = 0;
+      let priceTierDiscount = 0.18; // 18% Garage Wholesale
+      let isCostMasked = true;
+      let invFilterStatus = "all";
+      let invSelectedId = 1;
+
+      // Split Payment Allocation State
+      let splitState = {
+        cash: 2000.0,
+        upi: 5796.0,
+        credit: 0.0,
+        card: 0.0,
+      };
+
+      // POS Active Items
+      let posItems = [
+        {
+          id: 1,
+          sku: "HY-BRK-5810",
+          desc: "Front Brake Pad Set (Ceramic)",
+          fitment: "Creta / Seltos",
+          bin: "B-04-R2",
+          binCol: "amber",
+          hsn: "8708",
+          stock: 48,
+          qty: 2,
+          mrp: 2450.0,
+          rate: 1980.0,
+          disc: 5,
+          taxRate: 0.18,
+        },
+        {
+          id: 2,
+          sku: "MO-ENG-0021",
+          desc: "5W-30 Synth Engine Oil 4L",
+          fitment: "Universal P/D",
+          bin: "A-01-FL",
+          binCol: "blue",
+          hsn: "2710",
+          stock: 120,
+          qty: 1,
+          mrp: 3200.0,
+          rate: 2650.0,
+          disc: 0,
+          taxRate: 0.18,
+        },
+        {
+          id: 3,
+          sku: "BOS-FLT-904",
+          desc: "Oil Filter Spin-On (Bosch)",
+          fitment: "Hyundai 1.5 CRDi",
+          bin: "C-12-R1",
+          binCol: "amber",
+          hsn: "8421",
+          stock: 215,
+          qty: 1,
+          mrp: 420.0,
+          rate: 320.0,
+          disc: 0,
+          taxRate: 0.18,
+        },
+        {
+          id: 4,
+          sku: "MND-LGT-441",
+          desc: "H7 Halogen Bulb 12V 55W",
+          fitment: "H7 Socket All",
+          bin: "E-02-B1",
+          binCol: "purple",
+          hsn: "8539",
+          stock: 84,
+          qty: 2,
+          mrp: 280.0,
+          rate: 210.0,
+          disc: 2,
+          taxRate: 0.28,
+        },
+      ];
+
+      // Master Inventory Catalog
+      let inventoryCatalog = [
+        {
+          id: 1,
+          partNumber: "BOS-0986-AB1",
+          oemCrossRef: "58101-1RA00",
+          description: "Front Brake Disc Rotor Set (Vented 280mm)",
+          category: "Brakes",
+          vehicles: "Hyundai Verna, Creta 1.6/1.5 (2016-23)",
+          rackBin: "Rack A-04-T2",
+          min: 10,
+          max: 50,
+          stock: 34,
+          transit: "+12 in-transit",
+          costRate: "₹3,420.00",
+          wholesale: "₹4,250",
+          mrp: "₹5,100",
+          tax: "18%",
+          status: "IN STOCK",
+          statusType: "in-stock",
+          supplier: "Bosch India Automotive Ltd (Dist. Hub Mumbai)",
+          hsn: "8708.30.00",
+          lastGrn: "18-Oct-2024 (Inv #BOS-88219)",
+        },
+        {
+          id: 2,
+          partNumber: "GAB-STR-8812",
+          oemCrossRef: "41601-M75J00",
+          description: "Front Shock Absorber Strut Left Gas",
+          category: "Suspension",
+          vehicles: "Maruti Swift / Dzire (2011-2017)",
+          rackBin: "Rack B-11-T1",
+          min: 8,
+          max: 40,
+          stock: 6,
+          transit: "0",
+          costRate: "₹1,680.00",
+          wholesale: "₹2,100",
+          mrp: "₹2,550",
+          tax: "28%",
+          status: "CRIT. LOW",
+          statusType: "crit-low",
+          supplier: "Gabriel India Limited (Pune Depot)",
+          hsn: "8708.80.00",
+          lastGrn: "12-Oct-2024 (Inv #GAB-1102)",
+        },
+        {
+          id: 3,
+          partNumber: "LUC-ALT-4100",
+          oemCrossRef: "23100-02550",
+          description: "Alternator Assembly 12V 90A",
+          category: "Electrical",
+          vehicles: "Tata Ace / Super Ace Di",
+          rackBin: "Rack E-01-T3",
+          min: 4,
+          max: 15,
+          stock: 11,
+          transit: "0",
+          costRate: "₹4,850.00",
+          wholesale: "₹5,900",
+          mrp: "₹7,200",
+          tax: "18%",
+          status: "IN STOCK",
+          statusType: "in-stock",
+          supplier: "Lucas TVS Electricals Chennai",
+          hsn: "8511.50.00",
+          lastGrn: "15-Oct-2024 (Inv #LUC-772)",
+        },
+        {
+          id: 4,
+          partNumber: "MND-SWT-1029",
+          oemCrossRef: "37400-84411",
+          description: "Combination Switch / Indicator Stalk",
+          category: "Electrical",
+          vehicles: "Maruti WagonR / Alto K10",
+          rackBin: "Rack C-07-B4",
+          min: 15,
+          max: 60,
+          stock: 48,
+          transit: "+20 in-transit",
+          costRate: "₹690.00",
+          wholesale: "₹880",
+          mrp: "₹1,000",
+          tax: "18%",
+          status: "IN STOCK",
+          statusType: "in-stock",
+          supplier: "Uno Minda Ltd (Gurugram Plant)",
+          hsn: "8536.50.00",
+          lastGrn: "17-Oct-2024 (Inv #MND-4410)",
+        },
+        {
+          id: 5,
+          partNumber: "CAS-MAG-5W40",
+          oemCrossRef: "CAST-5W40-4L",
+          description: "Castrol Magnatec 5W-40 Synthetic 4L",
+          category: "Lubricants",
+          vehicles: "Universal Engine Oil API SN",
+          rackBin: "Pallet P-02",
+          min: 25,
+          max: 150,
+          stock: 18,
+          transit: "+50 in-transit",
+          costRate: "₹1,890.00",
+          wholesale: "₹2,350",
+          mrp: "₹2,950",
+          tax: "18%",
+          status: "LOW STOCK",
+          statusType: "crit-low",
+          supplier: "Castrol India Lubricants Distribution",
+          hsn: "2710.19.80",
+          lastGrn: "14-Oct-2024 (Inv #CAS-991)",
+        },
+        {
+          id: 6,
+          partNumber: "VAL-CLU-9021",
+          oemCrossRef: "22100-M68P00",
+          description: "Clutch Cover & Disc Kit 190mm",
+          category: "Transmission",
+          vehicles: "Maruti Celerio / WagonR 1.0 Petrol",
+          rackBin: "Rack D-03-T2",
+          min: 6,
+          max: 25,
+          stock: 0,
+          transit: "+10 arriving",
+          costRate: "₹2,210.00",
+          wholesale: "₹2,750",
+          mrp: "₹3,400",
+          tax: "18%",
+          status: "OOS / NIL",
+          statusType: "out-of-stock",
+          supplier: "Valeo Friction Materials India Ltd",
+          hsn: "8708.93.00",
+          lastGrn: "04-Oct-2024 (Inv #VAL-3091)",
+        },
+        {
+          id: 7,
+          partNumber: "TVS-BEL-1140",
+          oemCrossRef: "6PK1140",
+          description: "Multi-Ribbed Serpentine Fan Belt",
+          category: "Belts & Hoses",
+          vehicles: "Mahindra Scorpio / Bolero mHawk",
+          rackBin: "Rack C-02-B12",
+          min: 20,
+          max: 100,
+          stock: 72,
+          transit: "0",
+          costRate: "₹340.00",
+          wholesale: "₹440",
+          mrp: "₹580",
+          tax: "18%",
+          status: "IN STOCK",
+          statusType: "in-stock",
+          supplier: "Lucas Indian Service Belts & Hose",
+          hsn: "4010.31.00",
+          lastGrn: "16-Oct-2024 (Inv #TVS-1882)",
+        },
+      ];
+
+      let filteredInventory = [...inventoryCatalog];
+
+      // =========================================================================
+      // NAVIGATION & MODULE SWITCHING
+      // =========================================================================
+      function switchView(moduleName) {
+        activeModule = moduleName;
+        const posContainer = document.getElementById("view-pos-container");
+        const invContainer = document.getElementById(
+          "view-inventory-container"
+        );
+        const navPos = document.getElementById("nav-pos");
+        const navInv = document.getElementById("nav-inv");
+        const hkPos = document.getElementById("hk-btn-pos");
+        const hkInv = document.getElementById("hk-btn-inv");
+        const topInd = document.getElementById("top-view-indicator");
+
+        if (moduleName === "pos") {
+          posContainer.classList.remove("hidden");
+          invContainer.classList.add("hidden");
+
+          // Sidebar state
+          navPos.className =
+            "w-full flex items-center justify-between px-2.5 py-2 rounded bg-blue-600 text-white font-medium text-[10.5px] shadow-lg shadow-blue-700/30 text-left transition";
+          navInv.className =
+            "w-full flex items-center justify-between px-2.5 py-1.5 rounded text-slate-400 hover:text-slate-200 hover:bg-[#0f1728] transition text-[10.5px] text-left";
+
+          // Hotkey bar state
+          hkPos.className =
+            "bg-blue-600/30 border border-blue-500 text-blue-200 px-1.5 py-0.2 rounded";
+          hkInv.className =
+            "hover:bg-slate-700/50 bg-[#101726] border border-[#1e2a40] text-slate-300 px-1.5 py-0.2 rounded";
+
+          topInd.textContent = "COUNTER POS BILLING (F4)";
+          topInd.className = "text-cyan-300 font-bold uppercase";
+          notify(
+            "VIEW SWITCHED: POS [F4]",
+            "Counter Sales Terminal active. Ledger lines reloaded."
+          );
+        } else if (moduleName === "inventory") {
+          posContainer.classList.add("hidden");
+          invContainer.classList.remove("hidden");
+
+          // Sidebar state
+          navInv.className =
+            "w-full flex items-center justify-between px-2.5 py-2 rounded bg-blue-600 text-white font-medium text-[10.5px] shadow-lg shadow-blue-700/30 text-left transition";
+          navPos.className =
+            "w-full flex items-center justify-between px-2.5 py-1.5 rounded text-slate-400 hover:text-slate-200 hover:bg-[#0f1728] transition text-[10.5px] text-left";
+
+          // Hotkey bar state
+          hkInv.className =
+            "bg-blue-600/30 border border-blue-500 text-blue-200 px-1.5 py-0.2 rounded";
+          hkPos.className =
+            "hover:bg-slate-700/50 bg-[#101726] border border-[#1e2a40] text-slate-300 px-1.5 py-0.2 rounded";
+
+          topInd.textContent = "100K+ INVENTORY CONSOLE (F5)";
+          topInd.className = "text-amber-300 font-bold uppercase";
+          renderInventoryRows();
+          notify(
+            "VIEW SWITCHED: INVENTORY [F5]",
+            "Loaded 142,850 catalogued parts master index."
+          );
+        }
+      }
+
+      // =========================================================================
+      // POS LEDGER LOGIC & COMPUTATION ENGINE
+      // =========================================================================
+      function renderPosLedger() {
+        const tbody = document.getElementById("pos-table-body");
+        let html = "";
+
+        posItems.forEach((item, index) => {
+          const rowNo = String(index + 1).padStart(2, "0");
+          const binBadge =
+            item.binCol === "amber"
+              ? "bg-amber-950/80 border-amber-600/60 text-amber-400"
+              : item.binCol === "blue"
+              ? "bg-blue-950/80 border-blue-600/60 text-blue-300"
+              : "bg-purple-950/80 border-purple-600/60 text-purple-300";
+
+          html += `
+          <tr class="transition group cursor-pointer" onclick="notify('PART DETAILS', '${
+            item.sku
+          }: In Bin ${item.bin}, MRP ₹${item.mrp}')">
+            <td class="py-1 px-1.5 text-center text-slate-500">${rowNo}</td>
+            <td class="py-1 px-2 text-cyan-400 font-bold">${item.sku}</td>
+            <td class="py-1 px-2.5 text-slate-100 font-ui font-medium">${
+              item.desc
+            }</td>
+            <td class="py-1 px-2 text-slate-400">${item.fitment}</td>
+            <td class="py-1 px-1.5 text-center">
+              <span class="${binBadge} border font-bold px-1 rounded text-[9px]">${
+            item.bin
+          }</span>
+            </td>
+            <td class="py-1 px-1.5 text-center text-slate-400">${item.hsn}</td>
+            <td class="py-1 px-1.5 text-right text-emerald-400 font-bold">${
+              item.stock
+            }</td>
+            <td class="py-1 px-1.5 text-center">
+              <div class="flex items-center justify-center gap-1">
+                <button onclick="changePosQty(${
+                  item.id
+                }, -1); event.stopPropagation();" class="text-slate-400 hover:text-red-400 px-1 font-bold">-</button>
+                <span class="text-white font-bold bg-[#14233a] px-1 rounded">${
+                  item.qty
+                }</span>
+                <button onclick="changePosQty(${
+                  item.id
+                }, 1); event.stopPropagation();" class="text-slate-400 hover:text-emerald-400 px-1 font-bold">+</button>
+              </div>
+            </td>
+            <td class="py-1 px-2 text-right text-slate-400 line-through">₹${item.mrp.toLocaleString(
+              "en-IN"
+            )}</td>
+            <td class="py-1 px-2 text-right text-amber-300 font-bold">₹${item.rate.toFixed(
+              2
+            )}</td>
+            <td class="py-1 px-1.5 text-center text-orange-400 font-semibold">${
+              item.disc
+            }%</td>
+            <td class="py-1 px-1.5 text-center">
+              <button onclick="deletePosRow(${
+                item.id
+              }); event.stopPropagation();" class="text-slate-500 hover:text-red-400 font-bold text-[10px]" title="Remove">&times;</button>
+            </td>
+          </tr>
+        `;
+        });
+
+        // Show Candidate Prompt Row if candidate not yet added
+        const hasValeo = posItems.some((i) => i.sku.startsWith("VAL-CLU"));
+        if (!hasValeo) {
+          html += `
+          <tr class="bg-[#0b1b36] border-l-2 border-cyan-400">
+            <td class="py-1 px-1.5 text-center text-cyan-400 font-bold">05</td>
+            <td class="py-1 px-2">
+              <div class="flex items-center gap-1 bg-[#09152b] border border-blue-500 rounded px-1.5 py-0.5">
+                <span class="text-blue-400 font-bold">&gt;</span>
+                <input 
+                  id="row5-input"
+                  type="text" 
+                  value="VAL-CLU" 
+                  oninput="filterCandidates(this.value)"
+                  class="bg-transparent text-cyan-300 font-bold focus:outline-none w-20 text-[10.5px]"
+                />
+              </div>
+            </td>
+            <td class="py-1 px-2.5 text-blue-200 font-medium">Clutch Plate Assembly Valeo...</td>
+            <td class="py-1 px-2 text-slate-400">Maruti Swift/Dzire</td>
+            <td class="py-1 px-1.5 text-center">
+              <span class="bg-blue-900/60 border border-blue-500 text-blue-200 font-bold px-1 rounded text-[8.5px]">D-08-C1</span>
+            </td>
+            <td class="py-1 px-1.5 text-center text-slate-400">8708</td>
+            <td class="py-1 px-1.5 text-right text-emerald-400 font-bold">14</td>
+            <td class="py-1 px-1.5 text-center font-bold text-white bg-blue-700/60 rounded">1</td>
+            <td class="py-1 px-2 text-right text-slate-400 line-through">₹4,900</td>
+            <td class="py-1 px-2 text-right text-amber-300 font-bold">₹4,150.00</td>
+            <td class="py-1 px-1.5 text-center text-slate-500">0%</td>
+            <td class="py-1 px-1.5 text-center text-cyan-400 font-bold">READY</td>
+          </tr>
+        `;
+        }
+
+        tbody.innerHTML = html;
+        calculatePosTotals();
+      }
+
+      function calculatePosTotals() {
+        let gross = 0;
+        let totalQty = 0;
+        let cgst = 0;
+        let sgst = 0;
+        let igst = 0;
+
+        posItems.forEach((i) => {
+          const lineVal = i.rate * i.qty;
+          gross += lineVal;
+          totalQty += i.qty;
+
+          if (i.taxRate === 0.28) {
+            igst += lineVal * 0.28 * 0.5;
+            cgst += lineVal * 0.09;
+            sgst += lineVal * 0.09;
+          } else {
+            cgst += lineVal * 0.09;
+            sgst += lineVal * 0.09;
+          }
+        });
+
+        const tradeDisc = gross * 0.09424; // Matches proportion in screenshot
+        const netTaxable = gross - tradeDisc;
+        const unroundedNet = netTaxable + cgst + sgst + igst + coreSurcharge;
+        const roundedNet = Math.round(unroundedNet);
+        const roundDiff = roundedNet - unroundedNet;
+
+        // Update counters
+        document.getElementById("pos-lines-count").textContent = `${String(
+          posItems.length
+        ).padStart(2, "0")} Active`;
+        document.getElementById(
+          "pos-summary-items-count"
+        ).textContent = `${totalQty} ITEMS (${posItems.length} LINES)`;
+
+        // Update Math values
+        document.getElementById(
+          "pos-math-gross"
+        ).textContent = `₹${gross.toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+        document.getElementById(
+          "pos-math-discount"
+        ).textContent = `- ₹${tradeDisc.toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+        document.getElementById(
+          "pos-math-taxable"
+        ).textContent = `₹${netTaxable.toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+        document.getElementById(
+          "pos-math-cgst"
+        ).textContent = `₹${cgst.toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+        document.getElementById(
+          "pos-math-sgst"
+        ).textContent = `₹${sgst.toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+        document.getElementById(
+          "pos-math-igst"
+        ).textContent = `₹${igst.toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+        document.getElementById("pos-math-round").textContent = `${
+          roundDiff >= 0 ? "+" : ""
+        }₹${roundDiff.toFixed(2)}`;
+
+        const payableStr = `₹${roundedNet.toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+        document.getElementById("pos-math-payable").textContent = payableStr;
+
+        // Indian words representation
+        if (roundedNet === 7796) {
+          document.getElementById("pos-math-words").textContent =
+            "SEVEN THOUSAND SEVEN HUNDRED NINETY-SIX ONLY";
+        } else {
+          document.getElementById(
+            "pos-math-words"
+          ).textContent = `RUPEES ${roundedNet.toLocaleString("en-IN")} ONLY`;
+        }
+
+        // Re-balance payments
+        if (splitState.cash > 0 && roundedNet >= splitState.cash) {
+          splitState.upi = roundedNet - splitState.cash;
+        } else {
+          splitState.cash = roundedNet;
+          splitState.upi = 0;
+        }
+
+        document.getElementById(
+          "pos-split-cash"
+        ).textContent = `₹${splitState.cash.toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+        })}`;
+        document.getElementById(
+          "pos-split-upi"
+        ).textContent = `₹${splitState.upi.toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+        })}`;
+        document.getElementById(
+          "upi-display-amount"
+        ).textContent = `₹${splitState.upi.toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+        })}`;
+      }
+
+      function changePosQty(id, delta) {
+        const item = posItems.find((i) => i.id === id);
+        if (item) {
+          item.qty += delta;
+          if (item.qty <= 0) {
+            deletePosRow(id);
+            return;
+          }
+          renderPosLedger();
+          notify(
+            "QUANTITY MODIFIED",
+            `${item.sku} quantity set to ${item.qty} units.`
+          );
+        }
+      }
+
+      function deletePosRow(id) {
+        const item = posItems.find((i) => i.id === id);
+        posItems = posItems.filter((i) => i.id !== id);
+        renderPosLedger();
+        notify(
+          "LINE REMOVED",
+          `${item ? item.sku : "Item"} deleted from active ledger.`
+        );
+      }
+
+      function injectCandidate(candNum) {
+        const drawer = document.getElementById("pos-autocomplete-drawer");
+        if (candNum === 1) {
+          posItems.push({
+            id: 5,
+            sku: "VAL-CLU-3091",
+            desc: "Clutch Plate Assembly (Heavy Duty 200mm)",
+            fitment: "Maruti Swift / Dzire DDiS Diesel",
+            bin: "D-08-R1",
+            binCol: "amber",
+            hsn: "8708",
+            stock: 14,
+            qty: 1,
+            mrp: 4900.0,
+            rate: 4150.0,
+            disc: 0,
+            taxRate: 0.18,
+          });
+        } else {
+          posItems.push({
+            id: 6,
+            sku: "VAL-CLU-3092",
+            desc: "Clutch Release Bearing (Hydraulic CSC)",
+            fitment: "Maruti Swift / Baleno Petrol K12",
+            bin: "D-09-R2",
+            binCol: "blue",
+            hsn: "8708",
+            stock: 22,
+            qty: 1,
+            mrp: 1850.0,
+            rate: 1420.0,
+            disc: 0,
+            taxRate: 0.18,
+          });
+        }
+
+        drawer.style.display = "none";
+        renderPosLedger();
+        notify(
+          "CANDIDATE INJECTED",
+          "Clutch Plate Assembly appended to Counter Ledger. Totals recomputed."
+        );
+      }
+
+      function filterCandidates(query) {
+        const q = query.toUpperCase();
+        const c1 = document.getElementById("candidate-card-1");
+        const c2 = document.getElementById("candidate-card-2");
+        const tag = document.getElementById("pos-candidates-tag");
+
+        let visible = 0;
+        if ("VAL-CLU-3091 CLUTCH".includes(q)) {
+          c1.style.display = "flex";
+          visible++;
+        } else {
+          c1.style.display = "none";
+        }
+
+        if ("VAL-CLU-3092 BEARING".includes(q)) {
+          c2.style.display = "flex";
+          visible++;
+        } else {
+          c2.style.display = "none";
+        }
+
+        tag.textContent = `${visible} Candidates Matching "${query}"`;
+      }
+
+      function autoBalancePayments() {
+        const payableStr = document
+          .getElementById("pos-math-payable")
+          .textContent.replace(/[^\d.]/g, "");
+        const payable = parseFloat(payableStr) || 0;
+        splitState.cash = 0;
+        splitState.upi = payable;
+        splitState.credit = 0;
+        splitState.card = 0;
+        calculatePosTotals();
+        notify(
+          "PAYMENT AUTO-FIT",
+          `Allocated ₹${payable.toFixed(2)} to primary digital UPI gateway.`
+        );
+      }
+
+      function setPaymentMode(mode) {
+        const payableStr = document
+          .getElementById("pos-math-payable")
+          .textContent.replace(/[^\d.]/g, "");
+        const payable = parseFloat(payableStr) || 0;
+
+        if (mode === "cash") {
+          splitState.cash = payable;
+          splitState.upi = 0;
+          splitState.credit = 0;
+          splitState.card = 0;
+          notify(
+            "PAYMENT SET",
+            `Switched to 100% Cash Settlement (₹${payable.toFixed(2)})`
+          );
+        } else if (mode === "credit") {
+          splitState.credit = payable;
+          splitState.cash = 0;
+          splitState.upi = 0;
+          document.getElementById(
+            "pos-split-credit"
+          ).textContent = `₹${payable.toFixed(2)} (SpeedX)`;
+          notify(
+            "CREDIT LINE CHARGED",
+            `Debited ₹${payable.toFixed(2)} to SpeedX Garage Ledger.`
+          );
+        } else if (mode === "card") {
+          notify(
+            "CARD POS SWIPE",
+            "Terminal EDC-01 ready for contactless NFC swipe."
+          );
+        }
+        calculatePosTotals();
+      }
+
+      function toggleCoreDeposit() {
+        coreSurcharge = coreSurcharge === 0 ? 450.0 : 0;
+        const lbl = document.getElementById("pos-core-label");
+        if (coreSurcharge > 0) {
+          lbl.innerHTML = `<span class="text-amber-400 font-bold">+₹450.00</span> <span class="text-slate-400 text-[8.5px]">(Core Deposit Added)</span>`;
+          notify(
+            "CORE DEPOSIT",
+            "Added refundable old core surcharge: ₹450.00"
+          );
+        } else {
+          lbl.innerHTML = `₹0.00 <span class="text-slate-400 text-[8.5px] font-normal">(No Core Return)</span>`;
+          notify("CORE DEPOSIT REMOVED", "Core surcharge reset to ₹0.00");
+        }
+        calculatePosTotals();
+      }
+
+      function togglePriceTier() {
+        if (priceTierDiscount === 0.18) {
+          priceTierDiscount = 0.22;
+          document.getElementById("pos-tier-name").textContent =
+            "Dealership Whl.";
+          document.getElementById("pos-tier-badge").textContent = "TRD-22%";
+          document.getElementById("pos-tier-desc").textContent = "Discount 22%";
+          notify(
+            "PRICE TIER SWITCHED",
+            "Applied Tier 2 Dealership Wholesale (22% off MRP)."
+          );
+        } else {
+          priceTierDiscount = 0.18;
+          document.getElementById("pos-tier-name").textContent =
+            "Garage Wholesale";
+          document.getElementById("pos-tier-badge").textContent = "TRD-18%";
+          document.getElementById("pos-tier-desc").textContent = "Discount 18%";
+          notify(
+            "PRICE TIER SWITCHED",
+            "Restored standard Garage Wholesale (18% off MRP)."
+          );
+        }
+        calculatePosTotals();
+      }
+
+      function commitAndPrintInvoice() {
+        const modal = document.getElementById("modal-print-invoice");
+        const list = document.getElementById("modal-print-items");
+        const total = document.getElementById("pos-math-payable").textContent;
+
+        document.getElementById("modal-print-inv").textContent =
+          document.getElementById("pos-inv-number").textContent;
+        document.getElementById("modal-print-cust").textContent =
+          document.getElementById("pos-cust-name").textContent;
+        document.getElementById("modal-print-total").textContent = total;
+
+        let itemsHtml = "";
+        posItems.forEach((i) => {
+          itemsHtml += `
+          <div class="flex justify-between text-[9px]">
+            <span>${i.sku} x ${i.qty}</span>
+            <span class="text-amber-300">₹${(i.rate * i.qty).toFixed(2)}</span>
+          </div>
+        `;
+        });
+        list.innerHTML = itemsHtml;
+        modal.classList.remove("hidden");
+      }
+
+      function confirmSlipPrint() {
+        closeModal("modal-print-invoice");
+        invoiceCounter++;
+        document.getElementById(
+          "pos-inv-number"
+        ).textContent = `#INV-2024-${invoiceCounter}`;
+        notify(
+          "BILL COMMITTED & PRINTED",
+          `Slip dispatched to Epson COM3. Initialized Invoice #INV-2024-${invoiceCounter}.`
+        );
+      }
+
+      function holdCurrentBill() {
+        notify(
+          "BILL PARKED [HOLD]",
+          `Invoice #INV-2024-${invoiceCounter} parked to Hold Bay #01. POS lane clear.`
+        );
+      }
+
+      function discardCurrentBill() {
+        posItems = [];
+        renderPosLedger();
+        notify(
+          "BILL DISCARDED",
+          "Active ledger cleared. Terminal reset to zero items."
+        );
+      }
+
+      // =========================================================================
+      // INVENTORY MODULE LOGIC & TELEMETRY ENGINE
+      // =========================================================================
+      function renderInventoryRows() {
+        const tbody = document.getElementById("inventory-table-body");
+        let html = "";
+
+        if (filteredInventory.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="16" class="py-6 text-center text-slate-500 font-bold uppercase tracking-widest">No Matching Spares Found in 142,850 Catalog</td></tr>`;
+          return;
+        }
+
+        filteredInventory.forEach((item, index) => {
+          const isSelected = item.id === invSelectedId;
+          const rowNo = String(index + 1).padStart(2, "0");
+
+          let stockClass = "text-emerald-400 font-bold";
+          if (item.stock === 0) stockClass = "text-red-400 font-bold";
+          else if (item.stock < item.min)
+            stockClass = "text-amber-400 font-bold";
+
+          let badgeHtml = "";
+          if (item.statusType === "in-stock") {
+            badgeHtml = `<span class="bg-emerald-950/80 border border-emerald-500/60 text-emerald-400 px-1.5 py-0.2 rounded text-[8.5px] font-bold">IN STOCK</span>`;
+          } else if (item.statusType === "crit-low") {
+            badgeHtml = `<span class="bg-amber-950/80 border border-amber-500/60 text-amber-300 px-1.5 py-0.2 rounded text-[8.5px] font-bold">${item.status}</span>`;
+          } else {
+            badgeHtml = `<span class="bg-red-950/80 border border-red-500/60 text-red-300 px-1.5 py-0.2 rounded text-[8.5px] font-bold">OOS / NIL</span>`;
+          }
+
+          const transitDisplay =
+            item.transit !== "0"
+              ? `<span class="text-blue-300 font-semibold">${item.transit}</span>`
+              : `<span class="text-slate-600">0</span>`;
+
+          const costDisplay = isCostMasked
+            ? "••••••"
+            : `<span class="text-slate-300">${item.costRate}</span>`;
+
+          html += `
+          <tr 
+            onclick="selectInventoryRow(${item.id})"
+            class="${
+              isSelected ? "row-selected" : ""
+            } cursor-pointer transition"
+          >
+            <td class="py-1 px-1.5 text-center text-slate-500">${rowNo}</td>
+            <td class="py-1 px-2.5 text-cyan-400 font-bold">${
+              item.partNumber
+            }</td>
+            <td class="py-1 px-2.5 text-slate-400">${item.oemCrossRef}</td>
+            <td class="py-1 px-3 text-slate-100 font-ui font-medium">${
+              item.description
+            }</td>
+            <td class="py-1 px-2">
+              <span class="bg-[#121c2e] border border-[#21324f] px-1 py-0.2 rounded text-[9px] text-slate-300">${
+                item.category
+              }</span>
+            </td>
+            <td class="py-1 px-2.5 text-slate-300">${item.vehicles}</td>
+            <td class="py-1 px-2 text-amber-400 font-bold">${item.rackBin}</td>
+            <td class="py-1 px-1.5 text-center text-slate-400">${item.min}</td>
+            <td class="py-1 px-1.5 text-center text-slate-400">${item.max}</td>
+            <td class="py-1 px-2 text-right ${stockClass}">${
+            item.stock
+          } Pcs</td>
+            <td class="py-1 px-2 text-center text-[9.5px]">${transitDisplay}</td>
+            <td class="py-1 px-2 text-right text-slate-400">${costDisplay}</td>
+            <td class="py-1 px-2 text-right text-amber-300 font-bold">${
+              item.wholesale
+            }</td>
+            <td class="py-1 px-2 text-right text-slate-200 font-bold">${
+              item.mrp
+            }</td>
+            <td class="py-1 px-1.5 text-center text-slate-400">${item.tax}</td>
+            <td class="py-1 px-2 text-center">${badgeHtml}</td>
+          </tr>
+        `;
+        });
+
+        tbody.innerHTML = html;
+        document.getElementById(
+          "inv-display-range"
+        ).textContent = `1 - ${String(filteredInventory.length).padStart(
+          2,
+          "0"
+        )}`;
+      }
+
+      function selectInventoryRow(id) {
+        invSelectedId = id;
+        const item = inventoryCatalog.find((i) => i.id === id);
+        if (item) {
+          document.getElementById("inv-active-sku-name").textContent =
+            item.partNumber;
+          document.getElementById(
+            "inv-active-sku-desc"
+          ).textContent = `(${item.description})`;
+          document.getElementById("inv-active-sku-sup").textContent =
+            item.supplier;
+          document.getElementById("inv-active-sku-hsn").textContent = item.hsn;
+          document.getElementById("inv-active-sku-grn").textContent =
+            item.lastGrn;
+        }
+        renderInventoryRows();
+      }
+
+      function filterInventoryData(query) {
+        runInventoryFilter();
+      }
+
+      function runInventoryFilter() {
+        const q = document
+          .getElementById("inv-local-search")
+          .value.toLowerCase()
+          .trim();
+        const cat = document.getElementById("inv-filter-cat").value;
+        const make = document.getElementById("inv-filter-make").value;
+
+        filteredInventory = inventoryCatalog.filter((item) => {
+          if (invFilterStatus === "low" && item.stock >= item.min) return false;
+          if (invFilterStatus === "out" && item.stock !== 0) return false;
+          if (invFilterStatus === "surplus" && item.stock <= item.max - 10)
+            return false;
+          if (invFilterStatus === "neg") return false;
+
+          if (cat !== "all" && item.category !== cat) return false;
+          if (
+            make !== "all" &&
+            !item.vehicles.toLowerCase().includes(make.toLowerCase())
+          )
+            return false;
+
+          if (q) {
+            const matchStr =
+              `${item.partNumber} ${item.oemCrossRef} ${item.description} ${item.vehicles} ${item.rackBin}`.toLowerCase();
+            if (!matchStr.includes(q)) return false;
+          }
+
+          return true;
+        });
+
+        if (
+          filteredInventory.length > 0 &&
+          !filteredInventory.some((i) => i.id === invSelectedId)
+        ) {
+          invSelectedId = filteredInventory[0].id;
+          selectInventoryRow(invSelectedId);
+        }
+
+        renderInventoryRows();
+      }
+
+      function setInventoryStatusFilter(status) {
+        invFilterStatus = status;
+        const pills = ["all", "low", "neg", "out", "surplus"];
+        pills.forEach((p) => {
+          const btn = document.getElementById(`pill-inv-${p}`);
+          if (btn) {
+            if (p === status) {
+              btn.className =
+                "bg-blue-600 text-white font-bold px-2 py-0.5 rounded text-[9px]";
+            } else {
+              btn.className =
+                "bg-[#141e30] hover:bg-[#1a2840] text-slate-300 px-2 py-0.5 rounded text-[9px] border border-slate-700";
+            }
+          }
+        });
+        notify(
+          "FILTER ACTIVE",
+          `Switched inventory table to: ${status.toUpperCase()} records.`
+        );
+        runInventoryFilter();
+      }
+
+      function toggleCostMask() {
+        isCostMasked = !isCostMasked;
+        const lbl = document.getElementById("cost-label");
+        const icon = document.getElementById("cost-eye");
+
+        if (isCostMasked) {
+          lbl.textContent = "Cost Hidden";
+          icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>`;
+          notify(
+            "COST MASK APPLIED",
+            "Wholesale & landed costs encrypted with bullet mask."
+          );
+        } else {
+          lbl.textContent = "Cost Visible";
+          icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>`;
+          notify(
+            "COST UNMASKED",
+            "Manager view enabled: Landed purchase costs visible."
+          );
+        }
+        renderInventoryRows();
+      }
+
+      function handleNewSkuSubmit(e) {
+        e.preventDefault();
+        const sku = document
+          .getElementById("nsku-part")
+          .value.trim()
+          .toUpperCase();
+        const oem =
+          document.getElementById("nsku-oem").value.trim().toUpperCase() ||
+          "OE-GENUINE";
+        const desc = document.getElementById("nsku-desc").value.trim();
+        const cat = document.getElementById("nsku-cat").value;
+        const bin =
+          document.getElementById("nsku-bin").value.trim().toUpperCase() ||
+          "Rack A-05-T1";
+        const stock =
+          parseInt(document.getElementById("nsku-stock").value) || 0;
+        const ws = parseFloat(document.getElementById("nsku-ws").value) || 0;
+        const mrp = parseFloat(document.getElementById("nsku-mrp").value) || 0;
+        const tax = document.getElementById("nsku-tax").value;
+
+        const newItem = {
+          id: inventoryCatalog.length + 1,
+          partNumber: sku,
+          oemCrossRef: oem,
+          description: desc,
+          category: cat,
+          vehicles: "Universal Fitment",
+          rackBin: bin,
+          min: 5,
+          max: 50,
+          stock: stock,
+          transit: "0",
+          costRate: `₹${(ws * 0.82).toFixed(2)}`,
+          wholesale: `₹${ws.toLocaleString("en-IN")}`,
+          mrp: `₹${mrp.toLocaleString("en-IN")}`,
+          tax: tax,
+          status: stock > 0 ? "IN STOCK" : "OOS / NIL",
+          statusType: stock > 0 ? "in-stock" : "out-of-stock",
+          supplier: "Direct Manufacturer Depot (India)",
+          hsn: "8708.29.00",
+          lastGrn: "Just Registered (Pending GRN)",
+        };
+
+        inventoryCatalog.unshift(newItem);
+        closeModal("modal-new-sku");
+        runInventoryFilter();
+        selectInventoryRow(newItem.id);
+        notify(
+          "MASTER SKU CREATED",
+          `${sku} registered to Sybase inventory catalog.`
+        );
+      }
+
+      function triggerBulkBarcode() {
+        notify(
+          "BARCODE PDF QUEUE",
+          "Generating 128-Code label sheet for 1,42,850 catalogued inventory bins."
+        );
+      }
+      function triggerExportTally() {
+        notify(
+          "TALLY XML GENERATED",
+          "Exported inventory valuation payload to /erp/exports/tally_stock.xml"
+        );
+      }
+      function triggerReorderSheet() {
+        notify(
+          "REORDER ADVICE SHEET",
+          "Procurement report created for 412 Critical Low SKUs."
+        );
+      }
+      function paginateInventory(delta) {
+        const p = document.getElementById("inv-page-num");
+        let val = parseInt(p.textContent) + delta;
+        if (val < 1) val = 1;
+        if (val > 5714) val = 5714;
+        p.textContent = val;
+        notify(
+          "PAGE SHIFT",
+          `Loaded stock catalog partition Page ${val} / 5,714`
+        );
+      }
+
+      function editPartSpec() {
+        const item = inventoryCatalog.find((i) => i.id === invSelectedId);
+        notify(
+          "EDIT SPECIFICATION",
+          `Opening spec modification drawer for ${
+            item ? item.partNumber : "active part"
+          }.`
+        );
+      }
+
+      // =========================================================================
+      // GENERAL DIALOGUES & HELPERS
+      // =========================================================================
+      function notify(title, desc) {
+        const toast = document.getElementById("erp-toast");
+        document.getElementById("toast-title").textContent = title;
+        document.getElementById("toast-desc").textContent = desc;
+
+        toast.classList.add("active");
+        setTimeout(() => {
+          toast.classList.remove("active");
+        }, 3500);
+      }
+
+      function openModal(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove("hidden");
+      }
+      function closeModal(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.add("hidden");
+      }
+      function closeAllModals() {
+        document
+          .querySelectorAll(".modal-overlay")
+          .forEach((m) => m.classList.add("hidden"));
+      }
+
+      function focusSearch() {
+        if (activeModule === "pos") {
+          const inp = document.getElementById("global-sku-search");
+          if (inp) inp.focus();
+        } else {
+          const inp = document.getElementById("inv-local-search");
+          if (inp) inp.focus();
+        }
+        notify(
+          "SEARCH FOCUS [F3]",
+          "Query parts by Part Number, OEM cross ref, or vehicle model."
+        );
+      }
+
+      function handleUniversalSearch(val) {
+        if (activeModule === "inventory") {
+          const local = document.getElementById("inv-local-search");
+          local.value = val;
+          runInventoryFilter();
+        } else {
+          if (val.length > 2) {
+            notify(
+              "PARTS LOOKUP",
+              `Matched 14 items across Sybase catalog for "${val}".`
+            );
+          }
+        }
+      }
+
+      function handleDateHotkey() {
+        if (activeModule === "inventory") {
+          openModal("modal-new-sku");
+        } else {
+          notify(
+            "DATE / SYSTEM TIME",
+            "Transaction Timestamp: 24-Oct-2024 14:41 IST. Counter Book 01 Active."
+          );
+        }
+      }
+
+      function triggerPrintToken() {
+        notify(
+          "PRINT TOKEN [Alt+P]",
+          "Mechanic Job Card & Shelf Token dispatched to thermal queue COM3."
+        );
+      }
+
+      function selectCustomer(name, gstin) {
+        document.getElementById("pos-cust-name").textContent = name;
+        document.getElementById(
+          "pos-cust-gstin"
+        ).textContent = `(GSTIN: ${gstin})`;
+        closeModal("modal-customer");
+        notify("CUSTOMER SET", `Billing shifted to ${name}`);
+      }
+
+      function selectVehicle(reg, desc) {
+        document.getElementById("pos-veh-reg").textContent = reg;
+        document.getElementById("pos-veh-desc").textContent = `(${desc})`;
+        closeModal("modal-vehicle");
+        notify("VEHICLE ATTACHED", `Fitment context set to ${reg}`);
+      }
+
+      function setBranch(name) {
+        document.getElementById("active-branch-name").textContent = name;
+        closeModal("modal-branch");
+        notify("BRANCH SWITCHED", `Active inventory routed to ${name}`);
+      }
+
+      function confirmUpiSimulation() {
+        closeModal("modal-upi");
+        notify(
+          "UPI TRANSACTION VERIFIED",
+          "Payment of ₹5,796.00 confirmed via ICICI UPI gateway ref #TXN-99812."
+        );
+      }
+
+      function startLiveClock() {
+        const clock = document.getElementById("live-ist-clock");
+        function tick() {
+          const d = new Date();
+          const h = String(d.getHours()).padStart(2, "0");
+          const m = String(d.getMinutes()).padStart(2, "0");
+          const s = String(d.getSeconds()).padStart(2, "0");
+          if (clock) clock.textContent = `${h}:${m}:${s}`;
+        }
+        setInterval(tick, 1000);
+        tick();
+      }
+
+      // =========================================================================
+      // GLOBAL KEYBOARD HOTKEY INTERCEPTOR
+      // =========================================================================
+      document.addEventListener("keydown", (e) => {
+        const isInput = ["INPUT", "SELECT", "TEXTAREA"].includes(
+          document.activeElement.tagName
+        );
+
+        if (e.key === "Escape") {
+          closeAllModals();
+          return;
+        }
+
+        // POS Row 5 Input submission
+        if (e.key === "Enter") {
+          if (document.activeElement.id === "row5-input") {
+            e.preventDefault();
+            injectCandidate(1);
+            return;
+          }
+          if (!isInput && activeModule === "pos") {
+            e.preventDefault();
+            commitAndPrintInvoice();
+            return;
+          }
+          if (!isInput && activeModule === "inventory") {
+            e.preventDefault();
+            editPartSpec();
+            return;
+          }
+        }
+
+        // Space bar in inventory opens Stock Ledger
+        if (e.code === "Space" && !isInput && activeModule === "inventory") {
+          e.preventDefault();
+          openModal("modal-stock-ledger");
+          return;
+        }
+
+        // Navigation Hotkeys F4 & F5
+        if (e.key === "F4") {
+          e.preventDefault();
+          switchView("pos");
+          return;
+        }
+        if (e.key === "F5") {
+          e.preventDefault();
+          switchView("inventory");
+          return;
+        }
+
+        // Global F-Keys
+        if (e.key === "F1") {
+          e.preventDefault();
+          notify(
+            "HELP MANUAL [F1]",
+            "F4=Counter POS, F5=100K+ Inventory, F3=Universal Search, F12=Commit Invoice, Alt+P=Print"
+          );
+          return;
+        }
+        if (e.key === "F2") {
+          e.preventDefault();
+          handleDateHotkey();
+          return;
+        }
+        if (e.key === "F3") {
+          e.preventDefault();
+          focusSearch();
+          return;
+        }
+        if (e.key === "F8") {
+          e.preventDefault();
+          if (activeModule === "pos") setPaymentMode("cash");
+          return;
+        }
+        if (e.key === "F9") {
+          e.preventDefault();
+          if (activeModule === "pos") openModal("modal-upi");
+          return;
+        }
+        if (e.key === "F10") {
+          e.preventDefault();
+          if (activeModule === "pos") setPaymentMode("credit");
+          return;
+        }
+        if (e.key === "F11") {
+          e.preventDefault();
+          if (activeModule === "pos") setPaymentMode("card");
+          return;
+        }
+        if (e.key === "F12") {
+          e.preventDefault();
+          if (activeModule === "pos") commitAndPrintInvoice();
+          return;
+        }
+
+        // Combos
+        if (e.ctrlKey && e.key.toLowerCase() === "k") {
+          e.preventDefault();
+          focusSearch();
+          return;
+        }
+        if (e.altKey && e.key.toLowerCase() === "p") {
+          e.preventDefault();
+          triggerPrintToken();
+          return;
+        }
+        if (e.altKey && e.key.toLowerCase() === "h") {
+          e.preventDefault();
+          if (activeModule === "pos") holdCurrentBill();
+          return;
+        }
+        if (e.altKey && e.key.toLowerCase() === "d") {
+          e.preventDefault();
+          if (activeModule === "pos") discardCurrentBill();
+          return;
+        }
+        if (e.altKey && e.key.toLowerCase() === "v") {
+          e.preventDefault();
+          openModal("modal-vehicle");
+          return;
+        }
+        if (e.altKey && e.key.toLowerCase() === "c") {
+          e.preventDefault();
+          openModal("modal-customer");
+          return;
+        }
+        if (e.altKey && e.key.toLowerCase() === "s") {
+          e.preventDefault();
+          if (activeModule === "inventory") openModal("modal-substitute");
+          return;
+        }
+        if (e.altKey && e.key.toLowerCase() === "b") {
+          e.preventDefault();
+          if (activeModule === "inventory") triggerBulkBarcode();
+          return;
+        }
+        if (e.altKey && e.key.toLowerCase() === "e") {
+          e.preventDefault();
+          if (activeModule === "inventory") triggerExportTally();
+          return;
+        }
+        if (e.altKey && e.key.toLowerCase() === "r") {
+          e.preventDefault();
+          if (activeModule === "inventory") triggerReorderSheet();
+          return;
+        }
+
+        // Arrow Up/Down Traverse in Inventory
+        if (!isInput && activeModule === "inventory") {
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            const idx = filteredInventory.findIndex(
+              (i) => i.id === invSelectedId
+            );
+            if (idx < filteredInventory.length - 1) {
+              selectInventoryRow(filteredInventory[idx + 1].id);
+            }
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            const idx = filteredInventory.findIndex(
+              (i) => i.id === invSelectedId
+            );
+            if (idx > 0) {
+              selectInventoryRow(filteredInventory[idx - 1].id);
+            }
+          }
+        }
+      });
+
+      // Start App
+      window.onload = function () {
+        startLiveClock();
+        renderPosLedger();
+        renderInventoryRows();
+        selectInventoryRow(1);
+      };
+    </script>
+  </body>
+</html>
